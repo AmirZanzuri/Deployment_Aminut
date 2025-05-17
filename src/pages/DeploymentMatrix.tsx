@@ -3,7 +3,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
-import { Filter, Search, Plus, Edit2, Trash2, Server, X } from 'lucide-react';
+import { Filter, Search, Plus, Edit2, Trash2, Server, X, Grid } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 
@@ -22,6 +22,9 @@ const DeploymentMatrix: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
+  const [selectedComponents, setSelectedComponents] = useState<Record<string, string[]>>({});
+  const [showComponentsDialog, setShowComponentsDialog] = useState(false);
+  const [currentPlatformId, setCurrentPlatformId] = useState<string | null>(null);
   const [newPlatform, setNewPlatform] = useState({
     name: '',
     urn: '',
@@ -184,6 +187,35 @@ const DeploymentMatrix: React.FC = () => {
     });
 
     return groups;
+  };
+
+  // Group components by type
+  const componentTypes = ['Tactical Computer', 'Smart TMR', 'E-Lynks Radio', 'HQ Server', 'Client', 'GRX'];
+  
+  const getComponentsForType = (type: string) => {
+    return mockComponentVersions.filter(c => c.component_type === type);
+  };
+
+  const handleComponentSelect = (componentId: string) => {
+    if (!currentPlatformId) return;
+    
+    setSelectedComponents(prev => {
+      const current = prev[currentPlatformId] || [];
+      const updated = current.includes(componentId)
+        ? current.filter(id => id !== componentId)
+        : [...current, componentId];
+      
+      return {
+        ...prev,
+        [currentPlatformId]: updated
+      };
+    });
+  };
+
+  const isComponentSelected = (componentId: string) => {
+    return currentPlatformId 
+      ? (selectedComponents[currentPlatformId] || []).includes(componentId)
+      : false;
   };
 
   if (isLoading) {
@@ -377,15 +409,17 @@ const DeploymentMatrix: React.FC = () => {
                         {getVersionNumber(platform.application_version_id)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex flex-wrap gap-2">
-                          {getComponentsForPlatform(platform.id).map((component) => (
-                            <Badge
-                              key={component.id}
-                              status={getStatusColor(component.status)}
-                              label={`${component.component_type} ${component.version_number}`}
-                            />
-                          ))}
-                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          icon={<Grid size={16} />}
+                          onClick={() => {
+                            setCurrentPlatformId(platform.id);
+                            setShowComponentsDialog(true);
+                          }}
+                        >
+                          {(selectedComponents[platform.id] || []).length} Components
+                        </Button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex space-x-2">
@@ -640,6 +674,66 @@ const DeploymentMatrix: React.FC = () => {
             </p>
           </div>
         )}
+      </Dialog>
+
+      {/* Components Selection Dialog */}
+      <Dialog
+        isOpen={showComponentsDialog}
+        onClose={() => setShowComponentsDialog(false)}
+        title="Select Components"
+        size="xl"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Save Components"
+            onCancel={() => setShowComponentsDialog(false)}
+            onConfirm={() => setShowComponentsDialog(false)}
+          />
+        }
+      >
+        <div className="space-y-6">
+          {componentTypes.map(type => (
+            <div key={type} className="space-y-2">
+              <h3 className="font-medium text-gray-900">{type}</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {getComponentsForType(type).map(component => (
+                  <div
+                    key={component.id}
+                    className={`
+                      p-4 rounded-lg border cursor-pointer transition-colors
+                      ${isComponentSelected(component.id)
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:border-blue-300'}
+                    `}
+                    onClick={() => handleComponentSelect(component.id)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {component.component_type} {component.version_number}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Deployed: {new Date(component.deployment_date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <Badge
+                        status={getStatusColor(component.status)}
+                        label={component.status}
+                      />
+                    </div>
+                    {component.known_issues && component.known_issues.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-sm text-red-600">
+                          Issues: {component.known_issues.length}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </Dialog>
     </div>
   );
