@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
-import { mockPlatforms, mockComponentVersions, mockProjects } from '../services/mockData';
+import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project } from '../types';
 import { Filter, DownloadCloud, Search, Layers } from 'lucide-react';
 
@@ -48,34 +48,6 @@ const DeploymentMatrix: React.FC = () => {
     return matchesProject && matchesSearch;
   });
 
-  // Group platforms based on selected grouping option
-  const groupedPlatforms = () => {
-    switch (grouping) {
-      case 'project':
-        return filteredPlatforms.reduce((acc, platform) => {
-          const projectName = getProjectName(platform.project_id);
-          if (!acc[projectName]) acc[projectName] = [];
-          acc[projectName].push(platform);
-          return acc;
-        }, {} as Record<string, Platform[]>);
-      
-      case 'type':
-        return filteredPlatforms.reduce((acc, platform) => {
-          if (!acc[platform.type]) acc[platform.type] = [];
-          acc[platform.type].push(platform);
-          return acc;
-        }, {} as Record<string, Platform[]>);
-      
-      case 'version':
-        return filteredPlatforms.reduce((acc, platform) => {
-          const version = mockApplicationVersions.find(v => v.id === platform.application_version_id)?.version_number || 'Unknown';
-          if (!acc[version]) acc[version] = [];
-          acc[version].push(platform);
-          return acc;
-        }, {} as Record<string, Platform[]>);
-    }
-  };
-
   // Get components for a specific platform
   const getComponentsForPlatform = (platformId: string): ComponentVersion[] => {
     return componentVersions.filter(component => {
@@ -95,6 +67,51 @@ const DeploymentMatrix: React.FC = () => {
       default: return 'info';
     }
   };
+
+  // Group platforms based on selected grouping option
+  const groupedPlatforms = () => {
+    const groups: Record<string, Platform[]> = {};
+
+    filteredPlatforms.forEach(platform => {
+      let groupKey = '';
+      
+      switch (grouping) {
+        case 'project':
+          groupKey = getProjectName(platform.project_id);
+          break;
+        case 'type':
+          groupKey = platform.type;
+          break;
+        case 'version':
+          const version = mockApplicationVersions.find(v => v.id === platform.application_version_id);
+          groupKey = version ? version.version_number : 'Unknown Version';
+          break;
+      }
+
+      if (!groups[groupKey]) {
+        groups[groupKey] = [];
+      }
+      groups[groupKey].push(platform);
+    });
+
+    return groups;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="animate-pulse space-y-6">
+        <div className="h-12 bg-gray-200 rounded"></div>
+        <div className="h-20 bg-gray-200 rounded"></div>
+        <div className="grid grid-cols-1 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const groups = groupedPlatforms();
 
   return (
     <div className="space-y-6">
@@ -122,9 +139,9 @@ const DeploymentMatrix: React.FC = () => {
               value={grouping}
               onChange={(e) => setGrouping(e.target.value as GroupingOption)}
             >
-              <option value="project">Project</option>
-              <option value="type">Type</option>
-              <option value="version">Version</option>
+              <option value="project">By Project</option>
+              <option value="type">By Type</option>
+              <option value="version">By Version</option>
             </select>
           </div>
 
@@ -189,7 +206,7 @@ const DeploymentMatrix: React.FC = () => {
 
       {/* Matrix Display */}
       <div className="space-y-6">
-        {filteredPlatforms.length === 0 ? (
+        {Object.keys(groups).length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow">
             <Filter className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-lg font-medium text-gray-900">No nodes match your filters</h3>
@@ -207,7 +224,7 @@ const DeploymentMatrix: React.FC = () => {
             </div>
           </div>
         ) : (
-          Object.entries(groupedPlatforms()).map(([group, platforms]) => (
+          Object.entries(groups).map(([group, platforms]) => (
             <Card
               key={group}
               title={group}
@@ -216,7 +233,7 @@ const DeploymentMatrix: React.FC = () => {
             >
               <div className="space-y-4">
                 {platforms.map((platform) => {
-                  const components = getComponentsForPlatform(platform.platform_id);
+                  const components = getComponentsForPlatform(platform.id);
                   
                   return (
                     <div key={platform.id} className="border rounded-lg p-4">
