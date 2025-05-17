@@ -5,6 +5,7 @@ import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { Component } from '../types';
 import { Plus, Edit2, Trash2, Cpu, ChevronDown, ChevronRight } from 'lucide-react';
+import { mockElynxVersions, mockGrxVersions, mockSmartTmrVersions } from '../services/mockData';
 
 const Components: React.FC = () => {
   const [components, setComponents] = useState<Component[]>([]);
@@ -112,6 +113,20 @@ const Components: React.FC = () => {
       ...prev,
       [type]: !prev[type]
     }));
+  };
+
+  // Get available versions based on component type
+  const getAvailableVersions = (type: Component['type']) => {
+    switch (type) {
+      case 'E-Lynks Radio':
+        return mockElynxVersions.map(v => v.version_number);
+      case 'GRX':
+        return mockGrxVersions.map(v => v.version_number);
+      case 'Smart TMR':
+        return mockSmartTmrVersions.map(v => v.version_number);
+      default:
+        return ['1.0.0', '1.1.0', '2.0.0']; // Default versions for other types
+    }
   };
 
   const columns = [
@@ -261,7 +276,14 @@ const Components: React.FC = () => {
               id="type"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={newComponent.type}
-              onChange={(e) => setNewComponent({ ...newComponent, type: e.target.value as Component['type'] })}
+              onChange={(e) => {
+                const type = e.target.value as Component['type'];
+                setNewComponent({ 
+                  ...newComponent, 
+                  type,
+                  version: '' // Reset version when type changes
+                });
+              }}
             >
               {componentTypes.map((type) => (
                 <option key={type} value={type}>{type}</option>
@@ -287,14 +309,17 @@ const Components: React.FC = () => {
             <label htmlFor="version" className="block text-sm font-medium text-gray-700">
               Version
             </label>
-            <input
-              type="text"
+            <select
               id="version"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={newComponent.version}
               onChange={(e) => setNewComponent({ ...newComponent, version: e.target.value })}
-              placeholder="1.0.0"
-            />
+            >
+              <option value="">Select Version</option>
+              {getAvailableVersions(newComponent.type).map((version) => (
+                <option key={version} value={version}>Version {version}</option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -349,7 +374,14 @@ const Components: React.FC = () => {
                 id="edit-type"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={selectedComponent.type}
-                onChange={(e) => setSelectedComponent({ ...selectedComponent, type: e.target.value as Component['type'] })}
+                onChange={(e) => {
+                  const type = e.target.value as Component['type'];
+                  setSelectedComponent({ 
+                    ...selectedComponent, 
+                    type,
+                    version: '' // Reset version when type changes
+                  });
+                }}
               >
                 {componentTypes.map((type) => (
                   <option key={type} value={type}>{type}</option>
@@ -375,14 +407,17 @@ const Components: React.FC = () => {
               <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
                 Version
               </label>
-              <input
-                type="text"
+              <select
                 id="edit-version"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={selectedComponent.version}
                 onChange={(e) => setSelectedComponent({ ...selectedComponent, version: e.target.value })}
-                placeholder="1.0.0"
-              />
+              >
+                <option value="">Select Version</option>
+                {getAvailableVersions(selectedComponent.type).map((version) => (
+                  <option key={version} value={version}>Version {version}</option>
+                ))}
+              </select>
             </div>
 
             <div>
