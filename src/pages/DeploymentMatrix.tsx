@@ -68,6 +68,15 @@ const DeploymentMatrix: React.FC = () => {
     hardware: '',
   });
 
+  // Get hardware components by type
+  const getHardwareComponents = (type: string | undefined = undefined) => {
+    // Filter to only show components with allowed types
+    const allowedTypes = ['HQ Server', 'Client', 'Tactical Computer'];
+    return mockHardwareComponents.filter(c => 
+      allowedTypes.includes(c.type) && (!type || c.type === type)
+    );
+  };
+
   // Find platforms with duplicate URNs
   const getDuplicateUrns = () => {
     const urnCounts = platforms.reduce((acc, platform) => {
@@ -89,11 +98,6 @@ const DeploymentMatrix: React.FC = () => {
   // Get components for a specific type
   const getComponentsForType = (type: string): ComponentVersion[] => {
     return componentVersions.filter(component => component.component_type === type);
-  };
-
-  // Get hardware components by type
-  const getHardwareComponents = (type: string | undefined = undefined) => {
-    return mockHardwareComponents.filter(c => !type || c.type === type);
   };
 
   // Get hardware component details
@@ -751,6 +755,7 @@ const DeploymentMatrix: React.FC = () => {
           <DialogFooter
             cancelText="Cancel"
             confirmText="Delete Node"
+            
             onCancel={() => setDeleteDialogOpen(false)}
             onConfirm={handleDeletePlatform}
             danger
