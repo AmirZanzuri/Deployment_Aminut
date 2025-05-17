@@ -4,20 +4,22 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
-import { ApplicationVersion, Platform, ElynxVersion, GrxVersion } from '../types';
-import { Plus, Radio, Cpu } from 'lucide-react';
-import { mockPlatforms, mockApplicationVersions, mockElynxVersions, mockGrxVersions } from '../services/mockData';
+import { ApplicationVersion, Platform, ElynxVersion, GrxVersion, SmartTmrVersion } from '../types';
+import { Plus, Radio, Cpu, Laptop } from 'lucide-react';
+import { mockPlatforms, mockApplicationVersions, mockElynxVersions, mockGrxVersions, mockSmartTmrVersions } from '../services/mockData';
 
 const Versions: React.FC = () => {
   const [applicationVersions, setApplicationVersions] = useState<ApplicationVersion[]>([]);
   const [elynxVersions, setElynxVersions] = useState<ElynxVersion[]>([]);
   const [grxVersions, setGrxVersions] = useState<GrxVersion[]>([]);
+  const [smartTmrVersions, setSmartTmrVersions] = useState<SmartTmrVersion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVersion, setSelectedVersion] = useState<ApplicationVersion | null>(null);
   const [showPlatformsDialog, setShowPlatformsDialog] = useState(false);
   const [showNewVersionDialog, setShowNewVersionDialog] = useState(false);
   const [showNewElynxDialog, setShowNewElynxDialog] = useState(false);
   const [showNewGrxDialog, setShowNewGrxDialog] = useState(false);
+  const [showNewSmartTmrDialog, setShowNewSmartTmrDialog] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const [showPlatformDetailsDialog, setShowPlatformDetailsDialog] = useState(false);
 
@@ -41,12 +43,19 @@ const Versions: React.FC = () => {
     protocol_version: '',
   });
 
+  const [newSmartTmrVersion, setNewSmartTmrVersion] = useState({
+    version_number: '',
+    hardware_version: '',
+    software_version: '',
+  });
+
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
       setApplicationVersions(mockApplicationVersions);
       setElynxVersions(mockElynxVersions);
       setGrxVersions(mockGrxVersions);
+      setSmartTmrVersions(mockSmartTmrVersions);
       setIsLoading(false);
     }, 1000);
   }, []);
@@ -99,6 +108,22 @@ const Versions: React.FC = () => {
       version_number: '',
       software_version: '',
       protocol_version: '',
+    });
+  };
+
+  const handleCreateSmartTmrVersion = () => {
+    const versionToAdd: SmartTmrVersion = {
+      id: (smartTmrVersions.length + 1).toString(),
+      ...newSmartTmrVersion,
+      created_at: new Date().toISOString(),
+    };
+
+    setSmartTmrVersions([...smartTmrVersions, versionToAdd]);
+    setShowNewSmartTmrDialog(false);
+    setNewSmartTmrVersion({
+      version_number: '',
+      hardware_version: '',
+      software_version: '',
     });
   };
 
@@ -181,6 +206,26 @@ const Versions: React.FC = () => {
     {
       header: 'Created',
       accessor: (version: GrxVersion) => 
+        new Date(version.created_at).toLocaleDateString(),
+    },
+  ];
+
+  const smartTmrColumns = [
+    {
+      header: 'Version Number',
+      accessor: 'version_number',
+    },
+    {
+      header: 'Hardware Version',
+      accessor: 'hardware_version',
+    },
+    {
+      header: 'Software Version',
+      accessor: 'software_version',
+    },
+    {
+      header: 'Created',
+      accessor: (version: SmartTmrVersion) => 
         new Date(version.created_at).toLocaleDateString(),
     },
   ];
@@ -282,6 +327,29 @@ const Versions: React.FC = () => {
           <Table
             columns={grxColumns}
             data={grxVersions}
+            keyExtractor={(version) => version.id}
+            isLoading={isLoading}
+          />
+        </Card>
+      </div>
+
+      {/* Smart-TMR Versions Section */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-900">Smart-TMR Versions</h2>
+          <Button
+            variant="primary"
+            icon={<Laptop size={16} />}
+            onClick={() => setShowNewSmartTmrDialog(true)}
+          >
+            New Smart-TMR Version
+          </Button>
+        </div>
+
+        <Card>
+          <Table
+            columns={smartTmrColumns}
+            data={smartTmrVersions}
             keyExtractor={(version) => version.id}
             isLoading={isLoading}
           />
@@ -487,6 +555,65 @@ const Versions: React.FC = () => {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={newGrxVersion.protocol_version}
               onChange={(e) => setNewGrxVersion({ ...newGrxVersion, protocol_version: e.target.value })}
+              placeholder="3.0.0"
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      {/* New Smart-TMR Version Dialog */}
+      <Dialog
+        isOpen={showNewSmartTmrDialog}
+        onClose={() => setShowNewSmartTmrDialog(false)}
+        title="Create New Smart-TMR Version"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Create Version"
+            onCancel={() => setShowNewSmartTmrDialog(false)}
+            onConfirm={handleCreateSmartTmrVersion}
+          />
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="smart_tmr_version_number" className="block text-sm font-medium text-gray-700">
+              Version Number
+            </label>
+            <input
+              type="text"
+              id="smart_tmr_version_number"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newSmartTmrVersion.version_number}
+              onChange={(e) => setNewSmartTmrVersion({ ...newSmartTmrVersion, version_number: e.target.value })}
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="hardware_version" className="block text-sm font-medium text-gray-700">
+              Hardware Version
+            </label>
+            <input
+              type="text"
+              id="hardware_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newSmartTmrVersion.hardware_version}
+              onChange={(e) => setNewSmartTmrVersion({ ...newSmartTmrVersion, hardware_version: e.target.value })}
+              placeholder="2.1.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="software_version" className="block text-sm font-medium text-gray-700">
+              Software Version
+            </label>
+            <input
+              type="text"
+              id="software_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newSmartTmrVersion.software_version}
+              onChange={(e) => setNewSmartTmrVersion({ ...newSmartTmrVersion, software_version: e.target.value })}
               placeholder="3.0.0"
             />
           </div>
