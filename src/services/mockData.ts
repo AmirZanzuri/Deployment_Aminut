@@ -56,7 +56,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '1',
     platform_id: '1',
-    component_type: 'Frontend',
+    component_type: 'product',
     version_number: '1.0.0',
     status: 'deployed',
     deployment_date: randomPastDate(5),
@@ -65,7 +65,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '2',
     platform_id: '2',
-    component_type: 'Mobile App',
+    component_type: 'app',
     version_number: '1.1.0',
     status: 'testing',
     deployment_date: randomPastDate(3),
@@ -74,7 +74,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '3',
     platform_id: '3',
-    component_type: 'Desktop Client',
+    component_type: 'framework',
     version_number: '2.0.0',
     status: 'rollback_needed',
     deployment_date: randomPastDate(2),
@@ -83,7 +83,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '4',
     platform_id: '4',
-    component_type: 'Backend API',
+    component_type: 'radio',
     version_number: '1.5.0',
     status: 'deprecated',
     deployment_date: randomPastDate(30),
@@ -92,7 +92,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '5',
     platform_id: '5',
-    component_type: 'Message Service',
+    component_type: 'map',
     version_number: '3.0.0',
     status: 'deployed',
     deployment_date: randomPastDate(1),
@@ -181,7 +181,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '1',
     name: 'Web Portal',
-    urn: 'urn:fdc:web-portal',
+    urn: '1234567',
     application_version_id: '1',
     type: 'web',
     environment: 'production',
@@ -191,7 +191,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '2',
     name: 'Mobile Client',
-    urn: 'urn:fdc:mobile-client',
+    urn: '2345678',
     application_version_id: '1',
     type: 'mobile',
     environment: 'production',
@@ -201,7 +201,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '3',
     name: 'Desktop Application',
-    urn: 'urn:fdc:desktop-app',
+    urn: '3456789',
     application_version_id: '2',
     type: 'desktop',
     environment: 'staging',
@@ -211,7 +211,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '4',
     name: 'Backend Infrastructure',
-    urn: 'urn:iccs:backend',
+    urn: '4567890',
     application_version_id: '2',
     type: 'server',
     environment: 'development',
@@ -221,7 +221,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '5',
     name: 'Secure Messaging',
-    urn: 'urn:iccs:messaging',
+    urn: '5678901',
     application_version_id: '1',
     type: 'web',
     environment: 'testing',
@@ -231,7 +231,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '6',
     name: 'Field Terminal',
-    urn: 'urn:dita:field-terminal',
+    urn: '6789012',
     application_version_id: '1',
     type: 'mobile',
     environment: 'production',
