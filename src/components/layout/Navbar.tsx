@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Cpu, LayoutDashboard, Server, Package, Settings, Menu, X, Versions } from 'lucide-react';
+import { Cpu, LayoutDashboard, Server, Package, Settings, Menu, X, Captions as Versions } from 'lucide-react';
 import Button from '../ui/Button';
 
 const Navbar: React.FC = () => {
