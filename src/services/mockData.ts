@@ -8,7 +8,7 @@ const randomPastDate = (maxDays = 365) => {
 };
 
 // Mock Components
-export const mockComponents: Component[] = [
+const mockComponents: Component[] = [
   {
     id: '1',
     name: 'HQ Server Alpha',
@@ -52,7 +52,7 @@ export const mockComponents: Component[] = [
 ];
 
 // Mock Projects
-export const mockProjects: Project[] = [
+const mockProjects: Project[] = [
   {
     id: '1',
     name: 'FDC',
@@ -96,7 +96,7 @@ export const mockProjects: Project[] = [
 ];
 
 // Mock Component Versions
-export const mockComponentVersions: ComponentVersion[] = [
+const mockComponentVersions: ComponentVersion[] = [
   {
     id: '1',
     platform_id: '1',
@@ -127,7 +127,7 @@ export const mockComponentVersions: ComponentVersion[] = [
 ];
 
 // Mock Application Versions
-export const mockApplicationVersions: ApplicationVersion[] = [
+const mockApplicationVersions: ApplicationVersion[] = [
   {
     id: '1',
     version_number: '1.0.0',
@@ -149,7 +149,7 @@ export const mockApplicationVersions: ApplicationVersion[] = [
 ];
 
 // Mock E-lynx Versions
-export const mockElynxVersions: ElynxVersion[] = [
+const mockElynxVersions: ElynxVersion[] = [
   {
     id: '1',
     version_number: '1.0.0',
@@ -167,7 +167,7 @@ export const mockElynxVersions: ElynxVersion[] = [
 ];
 
 // Mock GRX Versions
-export const mockGrxVersions: GrxVersion[] = [
+const mockGrxVersions: GrxVersion[] = [
   {
     id: '1',
     version_number: '1.0.0',
@@ -185,7 +185,7 @@ export const mockGrxVersions: GrxVersion[] = [
 ];
 
 // Mock Smart-TMR Versions
-export const mockSmartTmrVersions: SmartTmrVersion[] = [
+const mockSmartTmrVersions: SmartTmrVersion[] = [
   {
     id: '1',
     version_number: '1.0.0',
@@ -203,7 +203,7 @@ export const mockSmartTmrVersions: SmartTmrVersion[] = [
 ];
 
 // Mock Platforms
-export const mockPlatforms: Platform[] = [
+const mockPlatforms: Platform[] = [
   {
     id: '1',
     name: 'Node 1',
@@ -263,13 +263,13 @@ export const mockPlatforms: Platform[] = [
   },
 ];
 
-export { 
-  mockPlatforms, 
-  mockProjects, 
-  mockComponentVersions, 
+export {
+  mockComponents,
+  mockPlatforms,
+  mockProjects,
+  mockComponentVersions,
   mockApplicationVersions,
   mockElynxVersions,
   mockGrxVersions,
   mockSmartTmrVersions,
-  mockComponents
 };
