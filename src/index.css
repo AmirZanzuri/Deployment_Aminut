@@ -13,6 +13,32 @@ body {
   color: var(--neon-blue);
 }
 
+@layer base {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  select,
+  textarea {
+    @apply bg-dark-blue border border-neon-blue/30 rounded-md px-3 py-2 text-neon-blue placeholder-neon-blue/40 focus:border-neon-blue focus:ring focus:ring-neon-blue/20 transition-colors;
+  }
+
+  input[type="text"]:disabled,
+  input[type="number"]:disabled,
+  input[type="email"]:disabled,
+  input[type="password"]:disabled,
+  input[type="search"]:disabled,
+  select:disabled,
+  textarea:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  label {
+    @apply block text-sm font-medium text-neon-blue mb-1;
+  }
+}
+
 @layer components {
   .futuristic-border {
     @apply relative rounded-lg border border-[var(--neon-blue)] bg-[var(--dark-blue)];

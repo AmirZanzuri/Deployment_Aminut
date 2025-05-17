@@ -27,7 +27,6 @@ const Dialog: React.FC<DialogProps> = ({
     xl: 'max-w-4xl',
   };
 
-  // Handle click outside to close
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -36,17 +35,14 @@ const Dialog: React.FC<DialogProps> = ({
 
   return (
     <Fragment>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto"
         onClick={handleBackdropClick}
       >
-        {/* Dialog */}
         <div 
           className={`futuristic-card w-full ${sizeClasses[size]} transform transition-all`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
           <div className="px-6 py-4 border-b border-neon-blue/20 flex justify-between items-center">
             <h3 className="text-lg font-medium neon-text">{title}</h3>
             <button
@@ -61,14 +57,12 @@ const Dialog: React.FC<DialogProps> = ({
             </button>
           </div>
 
-          {/* Body */}
-          <div className="px-6 py-4">
+          <div className="px-6 py-4 bg-darker-blue">
             {children}
           </div>
 
-          {/* Footer */}
           {footer && (
-            <div className="px-6 py-3 bg-darker-blue/50 border-t border-neon-blue/20 flex justify-end space-x-3">
+            <div className="px-6 py-3 bg-darker-blue border-t border-neon-blue/20 flex justify-end space-x-3">
               {footer}
             </div>
           )}
