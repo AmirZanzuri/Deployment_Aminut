@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Server, Package, Settings, Menu, X, Captions as Versions } from 'lucide-react';
+import { LayoutDashboard, Server, Captions as Versions, Menu, X } from 'lucide-react';
 import Button from '../ui/Button';
 
 const Navbar: React.FC = () => {
@@ -13,7 +13,6 @@ const Navbar: React.FC = () => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/matrix', label: 'Deployment Matrix', icon: <Server size={18} /> },
-    { path: '/projects', label: 'Projects', icon: <Package size={18} /> },
     { path: '/versions', label: 'Versions', icon: <Versions size={18} /> },
   ];
 
@@ -52,26 +51,14 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* User menu and mobile menu button */}
-          <div className="flex items-center">
+          {/* Mobile menu button */}
+          <div className="sm:hidden">
             <Button
               variant="ghost"
-              size="sm"
-              icon={<Settings size={18} />}
-              className="mr-2"
-            >
-              Settings
-            </Button>
-
-            {/* Mobile menu button */}
-            <div className="sm:hidden">
-              <Button
-                variant="ghost"
-                onClick={toggleMobileMenu}
-                icon={isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-                aria-expanded={isMobileMenuOpen}
-              />
-            </div>
+              onClick={toggleMobileMenu}
+              icon={isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              aria-expanded={isMobileMenuOpen}
+            />
           </div>
         </div>
       </div>
