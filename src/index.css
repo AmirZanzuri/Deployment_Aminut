@@ -24,7 +24,7 @@ body {
 }
 
 .futuristic-card {
-  @apply futuristic-border shadow-lg shadow-neon-dim;
+  @apply futuristic-border shadow-neon-dim;
 }
 
 .futuristic-grid {
