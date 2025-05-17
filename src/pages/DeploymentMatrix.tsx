@@ -57,6 +57,47 @@ const DeploymentMatrix: React.FC = () => {
     }, 1000);
   }, []);
 
+  const handleCreatePlatform = () => {
+    const platformToAdd: Platform = {
+      id: (platforms.length + 1).toString(),
+      ...newPlatform,
+      created_at: new Date().toISOString(),
+    };
+    
+    setPlatforms([...platforms, platformToAdd]);
+    setCreateDialogOpen(false);
+    setNewPlatform({
+      name: '',
+      urn: '',
+      type: 'HQ Server',
+      project_id: newPlatform.project_id,
+      application_version_id: '',
+      component_id: '',
+    });
+  };
+
+  const handleEditPlatform = () => {
+    if (!selectedPlatform) return;
+    
+    const updatedPlatforms = platforms.map(p => 
+      p.id === selectedPlatform.id ? selectedPlatform : p
+    );
+    
+    setPlatforms(updatedPlatforms);
+    setEditDialogOpen(false);
+    setSelectedPlatform(null);
+  };
+
+  const handleDeletePlatform = () => {
+    if (!selectedPlatform) return;
+    
+    const updatedPlatforms = platforms.filter(p => p.id !== selectedPlatform.id);
+    
+    setPlatforms(updatedPlatforms);
+    setDeleteDialogOpen(false);
+    setSelectedPlatform(null);
+  };
+
   const getProjectName = (projectId: string) => {
     return projects.find(p => p.id === projectId)?.name || 'Unknown Project';
   };
@@ -205,14 +246,110 @@ const DeploymentMatrix: React.FC = () => {
             cancelText="Cancel"
             confirmText="Create Platform"
             onCancel={() => setCreateDialogOpen(false)}
-            onConfirm={() => {
-              // Handle platform creation
-              setCreateDialogOpen(false);
-            }}
+            onConfirm={handleCreatePlatform}
           />
         }
       >
-        {/* Dialog content */}
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Platform Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.name}
+              onChange={(e) => setNewPlatform({ ...newPlatform, name: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="urn" className="block text-sm font-medium text-gray-700">
+              URN
+            </label>
+            <input
+              type="text"
+              id="urn"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+              value={newPlatform.urn}
+              onChange={(e) => setNewPlatform({ ...newPlatform, urn: e.target.value })}
+              placeholder="1234567"
+              maxLength={7}
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+              Type
+            </label>
+            <select
+              id="type"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.type}
+              onChange={(e) => setNewPlatform({ ...newPlatform, type: e.target.value as Platform['type'] })}
+            >
+              <option value="HQ Server">HQ Server</option>
+              <option value="Mounted Station">Mounted Station</option>
+            </select>
+          </div>
+          
+          <div>
+            <label htmlFor="project" className="block text-sm font-medium text-gray-700">
+              Project
+            </label>
+            <select
+              id="project"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.project_id}
+              onChange={(e) => setNewPlatform({ ...newPlatform, project_id: e.target.value })}
+            >
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="component" className="block text-sm font-medium text-gray-700">
+              Hardware Component
+            </label>
+            <select
+              id="component"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.component_id}
+              onChange={(e) => setNewPlatform({ ...newPlatform, component_id: e.target.value })}
+            >
+              <option value="">Select Component</option>
+              {availableComponents.map((component) => (
+                <option key={component.id} value={component.id}>
+                  {component.name} - {component.hardware}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
+              Application Version
+            </label>
+            <select
+              id="version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.application_version_id}
+              onChange={(e) => setNewPlatform({ ...newPlatform, application_version_id: e.target.value })}
+            >
+              <option value="">Select Version</option>
+              {applicationVersions.map((version) => (
+                <option key={version.id} value={version.id}>
+                  Version {version.version_number}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </Dialog>
 
       {/* Edit Platform Dialog */}
@@ -225,14 +362,111 @@ const DeploymentMatrix: React.FC = () => {
             cancelText="Cancel"
             confirmText="Save Changes"
             onCancel={() => setEditDialogOpen(false)}
-            onConfirm={() => {
-              // Handle platform update
-              setEditDialogOpen(false);
-            }}
+            onConfirm={handleEditPlatform}
           />
         }
       >
-        {/* Dialog content */}
+        {selectedPlatform && (
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700">
+                Platform Name
+              </label>
+              <input
+                type="text"
+                id="edit-name"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.name}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, name: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-urn" className="block text-sm font-medium text-gray-700">
+                URN
+              </label>
+              <input
+                type="text"
+                id="edit-urn"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+                value={selectedPlatform.urn}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, urn: e.target.value })}
+                maxLength={7}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700">
+                Type
+              </label>
+              <select
+                id="edit-type"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.type}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, type: e.target.value as Platform['type'] })}
+              >
+                <option value="HQ Server">HQ Server</option>
+                <option value="Mounted Station">Mounted Station</option>
+              </select>
+            </div>
+            
+            <div>
+              <label htmlFor="edit-project" className="block text-sm font-medium text-gray-700">
+                Project
+              </label>
+              <select
+                id="edit-project"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.project_id}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, project_id: e.target.value })}
+              >
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="edit-component" className="block text-sm font-medium text-gray-700">
+                Hardware Component
+              </label>
+              <select
+                id="edit-component"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.component_id}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, component_id: e.target.value })}
+              >
+                <option value="">Select Component</option>
+                {availableComponents.map((component) => (
+                  <option key={component.id} value={component.id}>
+                    {component.name} - {component.hardware}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
+                Application Version
+              </label>
+              <select
+                id="edit-version"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.application_version_id}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, application_version_id: e.target.value })}
+              >
+                <option value="">Select Version</option>
+                {applicationVersions.map((version) => (
+                  <option key={version.id} value={version.id}>
+                    Version {version.version_number}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
       </Dialog>
 
       {/* Delete Platform Dialog */}
@@ -245,10 +479,7 @@ const DeploymentMatrix: React.FC = () => {
             cancelText="Cancel"
             confirmText="Delete Platform"
             onCancel={() => setDeleteDialogOpen(false)}
-            onConfirm={() => {
-              // Handle platform deletion
-              setDeleteDialogOpen(false);
-            }}
+            onConfirm={handleDeletePlatform}
             danger
           />
         }
