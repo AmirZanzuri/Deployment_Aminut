@@ -79,14 +79,15 @@ const DeploymentMatrix: React.FC = () => {
       
       switch (grouping) {
         case 'project':
-          groupKey = getProjectName(platform.project_id);
+          const projectName = getProjectName(platform.project_id);
+          groupKey = projectName;
           break;
         case 'type':
           groupKey = platform.type;
           break;
         case 'version':
           const version = applicationVersions.find(v => v.id === platform.application_version_id);
-          groupKey = version ? version.version_number : 'Unknown Version';
+          groupKey = version ? `Version ${version.version_number}` : 'Unknown Version';
           break;
       }
 
@@ -236,13 +237,16 @@ const DeploymentMatrix: React.FC = () => {
               <div className="space-y-4">
                 {platforms.map((platform) => {
                   const components = getComponentsForPlatform(platform.id);
+                  const projectName = getProjectName(platform.project_id);
                   
                   return (
                     <div key={platform.id} className="border rounded-lg p-4">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h4 className="text-lg font-medium text-gray-900">{platform.name}</h4>
-                          <p className="text-sm text-gray-500">URN: {platform.urn}</p>
+                          <p className="text-sm text-gray-500">
+                            URN: {platform.urn} | Project: {projectName}
+                          </p>
                         </div>
                         <span className="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
                           {platform.type}
