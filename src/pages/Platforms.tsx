@@ -19,8 +19,7 @@ const Platforms: React.FC = () => {
   const [newPlatform, setNewPlatform] = useState({
     name: '',
     urn: '',
-    type: 'web' as const,
-    environment: 'development' as const,
+    type: 'HQ Server' as const,
     project_id: '',
     application_version_id: '',
   });
@@ -58,8 +57,7 @@ const Platforms: React.FC = () => {
     setNewPlatform({
       name: '',
       urn: '',
-      type: 'web',
-      environment: 'development',
+      type: 'HQ Server',
       project_id: newPlatform.project_id,
       application_version_id: '',
     });
@@ -95,33 +93,6 @@ const Platforms: React.FC = () => {
     return project ? project.name : 'Unknown Project';
   };
 
-  // Get environment color
-  const getEnvironmentColor = (environment: Platform['environment']): 'success' | 'warning' | 'info' | 'default' => {
-    switch (environment) {
-      case 'production': return 'success';
-      case 'staging': return 'info';
-      case 'testing': return 'warning';
-      case 'development': return 'default';
-      default: return 'default';
-    }
-  };
-
-  // Get platform type icon/color
-  const getPlatformTypeElement = (type: Platform['type']) => {
-    const typeClasses = {
-      web: 'bg-blue-100 text-blue-800',
-      mobile: 'bg-green-100 text-green-800',
-      desktop: 'bg-purple-100 text-purple-800',
-      server: 'bg-amber-100 text-amber-800',
-    };
-
-    return (
-      <span className={`px-2 py-1 text-xs font-medium rounded ${typeClasses[type]}`}>
-        {type.charAt(0).toUpperCase() + type.slice(1)}
-      </span>
-    );
-  };
-
   const platformColumns = [
     {
       header: 'URN',
@@ -136,15 +107,10 @@ const Platforms: React.FC = () => {
     },
     {
       header: 'Type',
-      accessor: (platform: Platform) => getPlatformTypeElement(platform.type),
-    },
-    {
-      header: 'Environment',
       accessor: (platform: Platform) => (
-        <Badge 
-          status={getEnvironmentColor(platform.environment)} 
-          label={platform.environment} 
-        />
+        <span className="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
+          {platform.type}
+        </span>
       ),
     },
     {
@@ -245,7 +211,8 @@ const Platforms: React.FC = () => {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
               value={newPlatform.urn}
               onChange={(e) => setNewPlatform({ ...newPlatform, urn: e.target.value })}
-              placeholder="urn:project:platform"
+              placeholder="1234567"
+              maxLength={7}
             />
           </div>
           
@@ -259,27 +226,8 @@ const Platforms: React.FC = () => {
               value={newPlatform.type}
               onChange={(e) => setNewPlatform({ ...newPlatform, type: e.target.value as Platform['type'] })}
             >
-              <option value="web">Web</option>
-              <option value="mobile">Mobile</option>
-              <option value="desktop">Desktop</option>
-              <option value="server">Server</option>
-            </select>
-          </div>
-          
-          <div>
-            <label htmlFor="environment" className="block text-sm font-medium text-gray-700">
-              Environment
-            </label>
-            <select
-              id="environment"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              value={newPlatform.environment}
-              onChange={(e) => setNewPlatform({ ...newPlatform, environment: e.target.value as Platform['environment'] })}
-            >
-              <option value="development">Development</option>
-              <option value="testing">Testing</option>
-              <option value="staging">Staging</option>
-              <option value="production">Production</option>
+              <option value="HQ Server">HQ Server</option>
+              <option value="Mounted Station">Mounted Station</option>
             </select>
           </div>
           
@@ -342,6 +290,7 @@ const Platforms: React.FC = () => {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
                 value={currentPlatform.urn}
                 onChange={(e) => setCurrentPlatform({ ...currentPlatform, urn: e.target.value })}
+                maxLength={7}
               />
             </div>
             
@@ -355,27 +304,8 @@ const Platforms: React.FC = () => {
                 value={currentPlatform.type}
                 onChange={(e) => setCurrentPlatform({ ...currentPlatform, type: e.target.value as Platform['type'] })}
               >
-                <option value="web">Web</option>
-                <option value="mobile">Mobile</option>
-                <option value="desktop">Desktop</option>
-                <option value="server">Server</option>
-              </select>
-            </div>
-            
-            <div>
-              <label htmlFor="edit-environment" className="block text-sm font-medium text-gray-700">
-                Environment
-              </label>
-              <select
-                id="edit-environment"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                value={currentPlatform.environment}
-                onChange={(e) => setCurrentPlatform({ ...currentPlatform, environment: e.target.value as Platform['environment'] })}
-              >
-                <option value="development">Development</option>
-                <option value="testing">Testing</option>
-                <option value="staging">Staging</option>
-                <option value="production">Production</option>
+                <option value="HQ Server">HQ Server</option>
+                <option value="Mounted Station">Mounted Station</option>
               </select>
             </div>
             

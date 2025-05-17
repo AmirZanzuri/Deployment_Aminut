@@ -12,8 +12,7 @@ export interface Platform {
   name: string;
   urn: string;
   application_version_id: string;
-  type: 'web' | 'mobile' | 'desktop' | 'server';
-  environment: 'production' | 'staging' | 'testing' | 'development';
+  type: 'HQ Server' | 'Mounted Station';
   project_id: string;
   created_at: string;
 }
