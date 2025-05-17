@@ -18,18 +18,18 @@
   .stat-card {
     @apply bg-dark-blue border rounded-lg p-6 
            transition-all duration-200 relative overflow-hidden;
-    border-color: theme('borderColor.neon-blue.20');
+    border-color: rgba(0, 243, 255, 0.2);
   }
 
   .stat-card:hover {
-    border-color: theme('borderColor.neon-blue.40');
+    border-color: rgba(0, 243, 255, 0.4);
     @apply shadow-neon;
   }
 
   .futuristic-card {
     @apply bg-dark-blue border rounded-lg shadow-neon-lg 
            transition-all duration-200;
-    border-color: theme('borderColor.neon-blue.20');
+    border-color: rgba(0, 243, 255, 0.2);
   }
 
   .neon-text {
