@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   children,
   variant = 'primary',
   size = 'md',
@@ -18,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   disabled,
   ...props
-}) => {
+}: ButtonProps) => {
   const baseClasses = "inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
   
   const variantClasses = {
