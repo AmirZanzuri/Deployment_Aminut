@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({
   headerActions,
 }) => {
   return (
-    <div className={`bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg shadow-lg ${className}`}>
+    <div className={`futuristic-card ${className}`}>
       {(title || subtitle) && (
         <div className="px-6 py-4 border-b border-neon-blue/20 flex justify-between items-center">
           <div>

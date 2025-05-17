@@ -18,4 +18,8 @@
   .stat-card {
     @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue/40 hover:shadow-neon relative overflow-hidden;
   }
+
+  .futuristic-card {
+    @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg shadow-neon-lg;
+  }
 }

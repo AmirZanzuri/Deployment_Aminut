@@ -13,6 +13,7 @@ export default {
       },
       boxShadow: {
         'neon': '0 0 15px rgb(var(--neon-blue-rgb) / 0.3)',
+        'neon-lg': '0 0 30px rgb(var(--neon-blue-rgb) / 0.3)',
       },
     },
   },
