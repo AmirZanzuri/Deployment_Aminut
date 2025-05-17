@@ -119,13 +119,26 @@ const Components: React.FC = () => {
   const getAvailableVersions = (type: Component['type']) => {
     switch (type) {
       case 'E-Lynks Radio':
-        return mockElynxVersions.map(v => v.version_number);
+        return mockElynxVersions.map(v => ({
+          version: v.version_number,
+          label: `${v.version_number} (Radio: ${v.radio_version}, Firmware: ${v.firmware_version})`
+        }));
       case 'GRX':
-        return mockGrxVersions.map(v => v.version_number);
+        return mockGrxVersions.map(v => ({
+          version: v.version_number,
+          label: `${v.version_number} (SW: ${v.software_version}, Protocol: ${v.protocol_version})`
+        }));
       case 'Smart TMR':
-        return mockSmartTmrVersions.map(v => v.version_number);
+        return mockSmartTmrVersions.map(v => ({
+          version: v.version_number,
+          label: `${v.version_number} (HW: ${v.hardware_version}, SW: ${v.software_version})`
+        }));
       default:
-        return ['1.0.0', '1.1.0', '2.0.0']; // Default versions for other types
+        return [
+          { version: '1.0.0', label: '1.0.0' },
+          { version: '1.1.0', label: '1.1.0' },
+          { version: '2.0.0', label: '2.0.0' }
+        ];
     }
   };
 
@@ -316,8 +329,8 @@ const Components: React.FC = () => {
               onChange={(e) => setNewComponent({ ...newComponent, version: e.target.value })}
             >
               <option value="">Select Version</option>
-              {getAvailableVersions(newComponent.type).map((version) => (
-                <option key={version} value={version}>Version {version}</option>
+              {getAvailableVersions(newComponent.type).map(({ version, label }) => (
+                <option key={version} value={version}>{label}</option>
               ))}
             </select>
           </div>
@@ -414,8 +427,8 @@ const Components: React.FC = () => {
                 onChange={(e) => setSelectedComponent({ ...selectedComponent, version: e.target.value })}
               >
                 <option value="">Select Version</option>
-                {getAvailableVersions(selectedComponent.type).map((version) => (
-                  <option key={version} value={version}>Version {version}</option>
+                {getAvailableVersions(selectedComponent.type).map(({ version, label }) => (
+                  <option key={version} value={version}>{label}</option>
                 ))}
               </select>
             </div>
