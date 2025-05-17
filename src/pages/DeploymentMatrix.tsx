@@ -74,13 +74,33 @@ const DeploymentMatrix: React.FC = () => {
   const groupedPlatforms = () => {
     const groups: Record<string, Platform[]> = {};
 
+    // Create initial groups based on grouping type
+    if (grouping === 'project') {
+      // Initialize groups for all projects
+      projects.forEach(project => {
+        groups[project.name] = [];
+      });
+    } else if (grouping === 'type') {
+      // Initialize groups for platform types
+      const types = ['HQ Server', 'Mounted Station'];
+      types.forEach(type => {
+        groups[type] = [];
+      });
+    } else if (grouping === 'version') {
+      // Initialize groups for all versions
+      applicationVersions.forEach(version => {
+        groups[`Version ${version.version_number}`] = [];
+      });
+      groups['Unknown Version'] = []; // Add unknown version group
+    }
+
+    // Distribute platforms to their respective groups
     filteredPlatforms.forEach(platform => {
       let groupKey = '';
       
       switch (grouping) {
         case 'project':
-          const projectName = getProjectName(platform.project_id);
-          groupKey = projectName;
+          groupKey = getProjectName(platform.project_id);
           break;
         case 'type':
           groupKey = platform.type;
@@ -95,6 +115,13 @@ const DeploymentMatrix: React.FC = () => {
         groups[groupKey] = [];
       }
       groups[groupKey].push(platform);
+    });
+
+    // Remove empty groups
+    Object.keys(groups).forEach(key => {
+      if (groups[key].length === 0) {
+        delete groups[key];
+      }
     });
 
     return groups;
