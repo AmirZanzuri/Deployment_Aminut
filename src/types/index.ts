@@ -22,7 +22,8 @@ export interface ComponentNode {
   id: string;
   platform_id: string;
   component_id: string;
-  component_type: Component['type'];
+  component_type: 'HQ Server' | 'Client' | 'Tactical Computer';
+  hardware: string;
   status: 'active' | 'inactive';
   created_at: string;
 }
@@ -30,7 +31,7 @@ export interface ComponentNode {
 export interface ComponentVersion {
   id: string;
   platform_id: string;
-  component_type: 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'HQ Server' | 'Client' | 'GRX';
+  component_type: 'HQ Server' | 'Client' | 'Tactical Computer';
   version_number: string;
   status: 'testing' | 'deployed' | 'rollback_needed' | 'deprecated';
   deployment_date: string;
@@ -88,10 +89,11 @@ export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';
 export interface Component {
   id: string;
   name: string;
-  type: 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'HQ Server' | 'Client' | 'GRX';
+  type: 'HQ Server' | 'Client' | 'Tactical Computer';
   description: string;
   ip: string;
   version: string;
+  hardware: string;
   created_at: string;
   node_id?: string;
 }
