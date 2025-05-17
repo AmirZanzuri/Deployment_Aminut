@@ -592,3 +592,5 @@ const DeploymentMatrix: React.FC = () => {
 };
 
 export default DeploymentMatrix;
+
+export default DeploymentMatrix
