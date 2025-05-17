@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Cpu, LayoutDashboard, Server, Package, Settings, Menu, X, Captions as Versions } from 'lucide-react';
+import { LayoutDashboard, Server, Package, Settings, Menu, X, Captions as Versions } from 'lucide-react';
 import Button from '../ui/Button';
 
 const Navbar: React.FC = () => {
@@ -12,7 +12,6 @@ const Navbar: React.FC = () => {
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-    { path: '/matrix', label: 'Deployment Matrix', icon: <Cpu size={18} /> },
     { path: '/projects', label: 'Projects', icon: <Package size={18} /> },
     { path: '/platforms', label: 'Platforms', icon: <Server size={18} /> },
     { path: '/versions', label: 'Versions', icon: <Versions size={18} /> },
@@ -43,7 +42,7 @@ const Navbar: React.FC = () => {
           {/* Logo and desktop navigation */}
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Cpu className="block h-8 w-auto text-blue-600" />
+              <Server className="block h-8 w-auto text-blue-600" />
               <span className="ml-2 text-xl font-bold text-gray-900">C2 Dashboard</span>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-2">
