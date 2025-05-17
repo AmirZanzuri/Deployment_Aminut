@@ -7,40 +7,6 @@ import { Filter, Search, Plus, Edit2, Trash2, Server, X, Grid } from 'lucide-rea
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion, Component } from '../types';
 
-// Mock components for the hardware dropdown
-const mockHardwareComponents: Component[] = [
-  {
-    id: '1',
-    name: 'HQ Server Alpha',
-    type: 'HQ Server',
-    description: 'Primary HQ server',
-    ip: '192.168.1.100',
-    version: '1.0.0',
-    hardware: 'Intel Xeon E5-2680, 64GB RAM',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: '2',
-    name: 'Tactical Computer Beta',
-    type: 'Tactical Computer',
-    description: 'Field tactical computer',
-    ip: '192.168.1.101',
-    version: '1.0.0',
-    hardware: 'Intel i7-1185G7, 32GB RAM',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: '3',
-    name: 'Client Station Gamma',
-    type: 'Client',
-    description: 'Standard client workstation',
-    ip: '192.168.1.102',
-    version: '1.0.0',
-    hardware: 'Intel i5-11400, 16GB RAM',
-    created_at: new Date().toISOString()
-  }
-];
-
 const DeploymentMatrix: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
@@ -59,6 +25,7 @@ const DeploymentMatrix: React.FC = () => {
   const [showComponentsDialog, setShowComponentsDialog] = useState(false);
   const [currentPlatformId, setCurrentPlatformId] = useState<string | null>(null);
   const [selectedComponents, setSelectedComponents] = useState<Record<string, Component[]>>({});
+  const [availableComponents, setAvailableComponents] = useState<Component[]>([]);
   const [newPlatform, setNewPlatform] = useState({
     name: '',
     urn: '',
@@ -70,9 +37,8 @@ const DeploymentMatrix: React.FC = () => {
 
   // Get hardware components by type
   const getHardwareComponents = (type: string | undefined = undefined) => {
-    // Filter to only show components with allowed types
     const allowedTypes = ['HQ Server', 'Client', 'Tactical Computer'];
-    return mockHardwareComponents.filter(c => 
+    return availableComponents.filter(c => 
       allowedTypes.includes(c.type) && (!type || c.type === type)
     );
   };
@@ -102,11 +68,21 @@ const DeploymentMatrix: React.FC = () => {
 
   // Get hardware component details
   const getHardwareDetails = (id: string) => {
-    return mockHardwareComponents.find(c => c.id === id);
+    return availableComponents.find(c => c.id === id);
   };
 
   useEffect(() => {
-    // Simulate API call
+    // Simulate API call to fetch components
+    // In a real app, this would be an API call to your backend
+    fetch('/api/components')
+      .then(response => response.json())
+      .then(data => setAvailableComponents(data))
+      .catch(error => {
+        console.error('Error fetching components:', error);
+        setAvailableComponents([]);
+      });
+
+    // Simulate API call for other data
     setTimeout(() => {
       setPlatforms(mockPlatforms);
       setComponentVersions(mockComponentVersions);
@@ -667,7 +643,6 @@ const DeploymentMatrix: React.FC = () => {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
                 value={selectedPlatform.urn}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, urn: e.target.value })}
-                placeholder="1234567"
                 maxLength={7}
               />
             </div>
@@ -755,7 +730,6 @@ const DeploymentMatrix: React.FC = () => {
           <DialogFooter
             cancelText="Cancel"
             confirmText="Delete Node"
-            
             onCancel={() => setDeleteDialogOpen(false)}
             onConfirm={handleDeletePlatform}
             danger
@@ -806,7 +780,6 @@ const DeploymentMatrix: React.FC = () => {
                     `}
                     onClick={() => handleComponentSelect(component)}
                   >
-                    
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-medium text-gray-900">
