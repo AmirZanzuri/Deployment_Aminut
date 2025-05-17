@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { Component } from '../types';
-import { Plus, Edit2, Trash2, Cpu } from 'lucide-react';
+import { Plus, Edit2, Trash2, Cpu, ChevronDown, ChevronRight } from 'lucide-react';
 
 const Components: React.FC = () => {
   const [components, setComponents] = useState<Component[]>([]);
@@ -13,6 +13,7 @@ const Components: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [newComponent, setNewComponent] = useState({
     name: '',
     type: 'Tactical Computer' as Component['type'],
@@ -106,12 +107,14 @@ const Components: React.FC = () => {
     return acc;
   }, {} as Record<Component['type'], Component[]>);
 
+  const toggleGroup = (type: string) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [type]: !prev[type]
+    }));
+  };
+
   const columns = [
-    {
-      header: 'Type',
-      accessor: 'type',
-      className: 'font-medium text-gray-900',
-    },
     {
       header: 'Name',
       accessor: 'name',
@@ -174,12 +177,52 @@ const Components: React.FC = () => {
       </div>
 
       <Card>
-        <Table
-          columns={columns}
-          data={components}
-          keyExtractor={(component) => component.id}
-          isLoading={isLoading}
-        />
+        {isLoading ? (
+          <div className="animate-pulse">
+            <div className="h-10 bg-gray-200 rounded mb-2"></div>
+            {[...Array(5)].map((_, index) => (
+              <div key={index} className="h-16 bg-gray-100 rounded mb-2"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-200">
+            {componentTypes.map(type => {
+              const typeComponents = groupedComponents[type] || [];
+              const isExpanded = expandedGroups[type];
+
+              return (
+                <div key={type} className="py-4">
+                  <button
+                    className="w-full flex items-center justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                    onClick={() => toggleGroup(type)}
+                  >
+                    <div className="flex items-center space-x-2">
+                      {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                      <span className="font-medium text-gray-900">{type}</span>
+                      <span className="text-sm text-gray-500">({typeComponents.length})</span>
+                    </div>
+                  </button>
+                  
+                  {isExpanded && typeComponents.length > 0 && (
+                    <div className="mt-2">
+                      <Table
+                        columns={columns}
+                        data={typeComponents}
+                        keyExtractor={(component) => component.id}
+                      />
+                    </div>
+                  )}
+                  
+                  {isExpanded && typeComponents.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      No components of this type
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </Card>
 
       {/* Create Component Dialog */}
