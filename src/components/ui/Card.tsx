@@ -18,12 +18,12 @@ const Card: React.FC<CardProps> = ({
   headerActions,
 }) => {
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${className}`}>
+    <div className={`futuristic-card ${className}`}>
       {(title || subtitle) && (
-        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div className="px-6 py-4 border-b border-neon-blue/20 flex justify-between items-center">
           <div>
-            {title && <h3 className="text-lg font-medium text-gray-900">{title}</h3>}
-            {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+            {title && <h3 className="text-lg font-medium neon-text">{title}</h3>}
+            {subtitle && <p className="text-sm text-neon-blue/70 mt-1">{subtitle}</p>}
           </div>
           {headerActions && (
             <div className="flex space-x-2">
@@ -32,11 +32,12 @@ const Card: React.FC<CardProps> = ({
           )}
         </div>
       )}
-      <div className="px-6 py-4">
-        {children}
+      <div className="px-6 py-4 relative">
+        <div className="futuristic-grid absolute inset-0 opacity-10"></div>
+        <div className="relative">{children}</div>
       </div>
       {footer && (
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+        <div className="px-6 py-3 bg-darker-blue/50 border-t border-neon-blue/20">
           {footer}
         </div>
       )}

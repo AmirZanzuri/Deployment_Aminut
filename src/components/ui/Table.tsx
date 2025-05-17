@@ -24,9 +24,9 @@ function Table<T>({
   if (isLoading) {
     return (
       <div className="animate-pulse">
-        <div className="h-10 bg-gray-200 rounded mb-2"></div>
+        <div className="h-10 bg-neon-blue/5 rounded mb-2"></div>
         {[...Array(5)].map((_, index) => (
-          <div key={index} className="h-16 bg-gray-100 rounded mb-2"></div>
+          <div key={index} className="h-16 bg-neon-blue/5 rounded mb-2"></div>
         ))}
       </div>
     );
@@ -35,32 +35,32 @@ function Table<T>({
   if (data.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">No data available</p>
+        <p className="text-neon-blue/50">No data available</p>
       </div>
     );
   }
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-neon-blue/20">
+        <thead className="bg-darker-blue">
           <tr>
             {columns.map((column, index) => (
               <th
                 key={index}
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.className || ''}`}
+                className={`px-6 py-3 text-left text-xs font-medium text-neon-blue uppercase tracking-wider ${column.className || ''}`}
               >
                 {column.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="divide-y divide-neon-blue/20">
           {data.map((item) => (
             <tr
               key={keyExtractor(item)}
-              className={onRowClick ? 'cursor-pointer hover:bg-gray-50 transition-colors' : ''}
+              className={onRowClick ? 'cursor-pointer hover:bg-neon-blue/5 transition-colors' : ''}
               onClick={onRowClick ? () => onRowClick(item) : undefined}
             >
               {columns.map((column, index) => {
@@ -71,7 +71,7 @@ function Table<T>({
                 return (
                   <td
                     key={index}
-                    className={`px-6 py-4 whitespace-nowrap text-sm ${column.className || ''}`}
+                    className={`px-6 py-4 whitespace-nowrap text-sm text-neon-blue/80 ${column.className || ''}`}
                   >
                     {cellContent as React.ReactNode}
                   </td>
