@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
+import Table from '../components/ui/Table';
 import { Component } from '../types';
 import { Plus, Edit2, Trash2, Cpu } from 'lucide-react';
 
@@ -105,15 +106,59 @@ const Components: React.FC = () => {
     return acc;
   }, {} as Record<Component['type'], Component[]>);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6 animate-pulse">
-        {[...Array(3)].map((_, index) => (
-          <div key={index} className="bg-gray-200 h-48 rounded-lg"></div>
-        ))}
-      </div>
-    );
-  }
+  const columns = [
+    {
+      header: 'Type',
+      accessor: 'type',
+      className: 'font-medium text-gray-900',
+    },
+    {
+      header: 'Name',
+      accessor: 'name',
+    },
+    {
+      header: 'IP Address',
+      accessor: 'ip',
+      className: 'font-mono',
+    },
+    {
+      header: 'Version',
+      accessor: 'version',
+    },
+    {
+      header: 'Description',
+      accessor: 'description',
+    },
+    {
+      header: 'Created',
+      accessor: (component: Component) => new Date(component.created_at).toLocaleDateString(),
+    },
+    {
+      header: 'Actions',
+      accessor: (component: Component) => (
+        <div className="flex space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Edit2 size={16} />}
+            onClick={() => {
+              setSelectedComponent(component);
+              setEditDialogOpen(true);
+            }}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Trash2 size={16} />}
+            onClick={() => {
+              setSelectedComponent(component);
+              setDeleteDialogOpen(true);
+            }}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -128,66 +173,14 @@ const Components: React.FC = () => {
         </Button>
       </div>
 
-      {/* Components by Type */}
-      <div className="space-y-6">
-        {componentTypes.map((type) => (
-          <Card
-            key={type}
-            title={type}
-            subtitle={`${groupedComponents[type]?.length || 0} components`}
-          >
-            {groupedComponents[type]?.length ? (
-              <div className="divide-y divide-gray-200">
-                {groupedComponents[type].map((component) => (
-                  <div key={component.id} className="py-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-3">
-                          <h3 className="text-sm font-medium text-gray-900 truncate">
-                            {component.name}
-                          </h3>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            v{component.version}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="font-mono">{component.ip}</span>
-                          <span>•</span>
-                          <span>{component.description}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          icon={<Edit2 size={16} />}
-                          onClick={() => {
-                            setSelectedComponent(component);
-                            setEditDialogOpen(true);
-                          }}
-                        />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          icon={<Trash2 size={16} />}
-                          onClick={() => {
-                            setSelectedComponent(component);
-                            setDeleteDialogOpen(true);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-6 text-gray-500">
-                No {type} components added yet
-              </div>
-            )}
-          </Card>
-        ))}
-      </div>
+      <Card>
+        <Table
+          columns={columns}
+          data={components}
+          keyExtractor={(component) => component.id}
+          isLoading={isLoading}
+        />
+      </Card>
 
       {/* Create Component Dialog */}
       <Dialog
