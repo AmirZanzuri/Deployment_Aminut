@@ -25,6 +25,13 @@ const Versions: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVersion, setSelectedVersion] = useState<ApplicationVersion | null>(null);
   const [showPlatformsDialog, setShowPlatformsDialog] = useState(false);
+  const [showNewVersionDialog, setShowNewVersionDialog] = useState(false);
+  const [newVersion, setNewVersion] = useState({
+    ecix_version: '',
+    core_version: '',
+    tiger_x_version: '',
+    map_core_version: '',
+  });
 
   useEffect(() => {
     // Simulate API call
@@ -33,6 +40,24 @@ const Versions: React.FC = () => {
       setIsLoading(false);
     }, 1000);
   }, []);
+
+  const handleCreateVersion = () => {
+    const versionToAdd: ApplicationVersion = {
+      id: (versions.length + 1).toString(),
+      ...newVersion,
+      created_at: new Date().toISOString(),
+      platforms_count: 0,
+    };
+
+    setVersions([...versions, versionToAdd]);
+    setShowNewVersionDialog(false);
+    setNewVersion({
+      ecix_version: '',
+      core_version: '',
+      tiger_x_version: '',
+      map_core_version: '',
+    });
+  };
 
   const columns = [
     {
@@ -80,6 +105,7 @@ const Versions: React.FC = () => {
         <Button
           variant="primary"
           icon={<Plus size={16} />}
+          onClick={() => setShowNewVersionDialog(true)}
         >
           New Version
         </Button>
@@ -93,6 +119,79 @@ const Versions: React.FC = () => {
           isLoading={isLoading}
         />
       </Card>
+
+      {/* New Version Dialog */}
+      <Dialog
+        isOpen={showNewVersionDialog}
+        onClose={() => setShowNewVersionDialog(false)}
+        title="Create New Version"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Create Version"
+            onCancel={() => setShowNewVersionDialog(false)}
+            onConfirm={handleCreateVersion}
+          />
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="ecix_version" className="block text-sm font-medium text-gray-700">
+              E-CIX Version
+            </label>
+            <input
+              type="text"
+              id="ecix_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newVersion.ecix_version}
+              onChange={(e) => setNewVersion({ ...newVersion, ecix_version: e.target.value })}
+              placeholder="2.1.0"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="core_version" className="block text-sm font-medium text-gray-700">
+              Core Version
+            </label>
+            <input
+              type="text"
+              id="core_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newVersion.core_version}
+              onChange={(e) => setNewVersion({ ...newVersion, core_version: e.target.value })}
+              placeholder="3.0.0"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="tiger_x_version" className="block text-sm font-medium text-gray-700">
+              Tiger-X Version
+            </label>
+            <input
+              type="text"
+              id="tiger_x_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newVersion.tiger_x_version}
+              onChange={(e) => setNewVersion({ ...newVersion, tiger_x_version: e.target.value })}
+              placeholder="1.5.0"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="map_core_version" className="block text-sm font-medium text-gray-700">
+              MapCore Version
+            </label>
+            <input
+              type="text"
+              id="map_core_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newVersion.map_core_version}
+              onChange={(e) => setNewVersion({ ...newVersion, map_core_version: e.target.value })}
+              placeholder="4.2.1"
+            />
+          </div>
+        </div>
+      </Dialog>
 
       {/* Platforms Dialog */}
       <Dialog
