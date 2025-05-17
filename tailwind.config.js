@@ -10,6 +10,7 @@ export default {
       },
       boxShadow: {
         'neon': '0 0 10px var(--neon-blue)',
+        'neon-dim': '0 0 10px rgba(0, 240, 255, 0.1)',
       },
     },
   },
