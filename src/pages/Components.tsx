@@ -4,8 +4,7 @@ import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { Component } from '../types';
-import { Plus, Edit2, Trash2, Cpu, ChevronDown, ChevronRight } from 'lucide-react';
-import { mockElynxVersions, mockGrxVersions, mockSmartTmrVersions } from '../services/mockData';
+import { Plus, Edit2, Trash2, Cpu } from 'lucide-react';
 import { useComponentStore } from '../store/useComponentStore';
 
 const Components: React.FC = () => {
@@ -14,7 +13,6 @@ const Components: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [newComponent, setNewComponent] = useState({
     name: '',
     type: 'Tactical Computer' as Component['type'],
@@ -59,60 +57,18 @@ const Components: React.FC = () => {
 
   const componentTypes: Component['type'][] = [
     'Tactical Computer',
-    'Smart TMR',
-    'E-Lynks Radio',
     'HQ Server',
     'Client',
-    'GRX',
   ];
-
-  // Group components by type
-  const groupedComponents = components.reduce((acc, component) => {
-    if (!acc[component.type]) {
-      acc[component.type] = [];
-    }
-    acc[component.type].push(component);
-    return acc;
-  }, {} as Record<Component['type'], Component[]>);
-
-  const toggleGroup = (type: string) => {
-    setExpandedGroups(prev => ({
-      ...prev,
-      [type]: !prev[type]
-    }));
-  };
-
-  // Get available versions based on component type
-  const getAvailableVersions = (type: Component['type']) => {
-    switch (type) {
-      case 'E-Lynks Radio':
-        return mockElynxVersions.map(v => ({
-          version: v.version_number,
-          label: `${v.version_number} (Radio: ${v.radio_version}, Firmware: ${v.firmware_version})`
-        }));
-      case 'GRX':
-        return mockGrxVersions.map(v => ({
-          version: v.version_number,
-          label: `${v.version_number} (SW: ${v.software_version}, Protocol: ${v.protocol_version})`
-        }));
-      case 'Smart TMR':
-        return mockSmartTmrVersions.map(v => ({
-          version: v.version_number,
-          label: `${v.version_number} (HW: ${v.hardware_version}, SW: ${v.software_version})`
-        }));
-      default:
-        return [
-          { version: '1.0.0', label: '1.0.0' },
-          { version: '1.1.0', label: '1.1.0' },
-          { version: '2.0.0', label: '2.0.0' }
-        ];
-    }
-  };
 
   const columns = [
     {
       header: 'Name',
       accessor: 'name',
+    },
+    {
+      header: 'Type',
+      accessor: 'type',
     },
     {
       header: 'IP Address',
@@ -122,6 +78,10 @@ const Components: React.FC = () => {
     {
       header: 'Version',
       accessor: 'version',
+    },
+    {
+      header: 'Hardware',
+      accessor: 'hardware',
     },
     {
       header: 'Description',
@@ -172,43 +132,11 @@ const Components: React.FC = () => {
       </div>
 
       <Card>
-        <div className="divide-y divide-gray-200">
-          {componentTypes.map(type => {
-            const typeComponents = groupedComponents[type] || [];
-            const isExpanded = expandedGroups[type];
-
-            return (
-              <div key={type} className="py-4">
-                <button
-                  className="w-full flex items-center justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                  onClick={() => toggleGroup(type)}
-                >
-                  <div className="flex items-center space-x-2">
-                    {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-                    <span className="font-medium text-gray-900">{type}</span>
-                    <span className="text-sm text-gray-500">({typeComponents.length})</span>
-                  </div>
-                </button>
-                
-                {isExpanded && typeComponents.length > 0 && (
-                  <div className="mt-2">
-                    <Table
-                      columns={columns}
-                      data={typeComponents}
-                      keyExtractor={(component) => component.id}
-                    />
-                  </div>
-                )}
-                
-                {isExpanded && typeComponents.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    No components of this type
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <Table
+          columns={columns}
+          data={components}
+          keyExtractor={(component) => component.id}
+        />
       </Card>
 
       {/* Create Component Dialog */}
@@ -247,14 +175,7 @@ const Components: React.FC = () => {
               id="type"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={newComponent.type}
-              onChange={(e) => {
-                const type = e.target.value as Component['type'];
-                setNewComponent({ 
-                  ...newComponent, 
-                  type,
-                  version: '' // Reset version when type changes
-                });
-              }}
+              onChange={(e) => setNewComponent({ ...newComponent, type: e.target.value as Component['type'] })}
             >
               {componentTypes.map((type) => (
                 <option key={type} value={type}>{type}</option>
@@ -280,17 +201,28 @@ const Components: React.FC = () => {
             <label htmlFor="version" className="block text-sm font-medium text-gray-700">
               Version
             </label>
-            <select
+            <input
+              type="text"
               id="version"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={newComponent.version}
               onChange={(e) => setNewComponent({ ...newComponent, version: e.target.value })}
-            >
-              <option value="">Select Version</option>
-              {getAvailableVersions(newComponent.type).map(({ version, label }) => (
-                <option key={version} value={version}>{label}</option>
-              ))}
-            </select>
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="hardware" className="block text-sm font-medium text-gray-700">
+              Hardware Specifications
+            </label>
+            <input
+              type="text"
+              id="hardware"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newComponent.hardware}
+              onChange={(e) => setNewComponent({ ...newComponent, hardware: e.target.value })}
+              placeholder="Intel i7-1185G7, 32GB RAM"
+            />
           </div>
 
           <div>
@@ -345,14 +277,7 @@ const Components: React.FC = () => {
                 id="edit-type"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={selectedComponent.type}
-                onChange={(e) => {
-                  const type = e.target.value as Component['type'];
-                  setSelectedComponent({ 
-                    ...selectedComponent, 
-                    type,
-                    version: '' // Reset version when type changes
-                  });
-                }}
+                onChange={(e) => setSelectedComponent({ ...selectedComponent, type: e.target.value as Component['type'] })}
               >
                 {componentTypes.map((type) => (
                   <option key={type} value={type}>{type}</option>
@@ -378,17 +303,28 @@ const Components: React.FC = () => {
               <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
                 Version
               </label>
-              <select
+              <input
+                type="text"
                 id="edit-version"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={selectedComponent.version}
                 onChange={(e) => setSelectedComponent({ ...selectedComponent, version: e.target.value })}
-              >
-                <option value="">Select Version</option>
-                {getAvailableVersions(selectedComponent.type).map(({ version, label }) => (
-                  <option key={version} value={version}>{label}</option>
-                ))}
-              </select>
+                placeholder="1.0.0"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-hardware" className="block text-sm font-medium text-gray-700">
+                Hardware Specifications
+              </label>
+              <input
+                type="text"
+                id="edit-hardware"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedComponent.hardware}
+                onChange={(e) => setSelectedComponent({ ...selectedComponent, hardware: e.target.value })}
+                placeholder="Intel i7-1185G7, 32GB RAM"
+              />
             </div>
 
             <div>
