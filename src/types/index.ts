@@ -14,6 +14,7 @@ export interface Platform {
   application_version_id: string;
   type: 'HQ Server' | 'Mounted Station';
   project_id: string;
+  component_id?: string;
   created_at: string;
   component_nodes?: ComponentNode[];
 }

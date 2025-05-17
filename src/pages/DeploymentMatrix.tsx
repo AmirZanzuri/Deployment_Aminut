@@ -36,12 +36,12 @@ const DeploymentMatrix: React.FC = () => {
     component_id: '',
   });
 
-  // Get available components by type
-  const getAvailableComponents = (type: string | undefined = undefined) => {
+  // Get available components filtered by type
+  const getAvailableComponents = (type?: Component['type']) => {
     return mockComponents.filter(c => !type || c.type === type);
   };
 
-  // Get component details by id
+  // Get component details by ID
   const getComponentDetails = (id: string) => {
     return mockComponents.find(c => c.id === id);
   };
@@ -614,7 +614,7 @@ const DeploymentMatrix: React.FC = () => {
             <select
               id="component"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              value={newPlatform.component_id || ''}
+              value={newPlatform.component_id}
               onChange={(e) => setNewPlatform({ ...newPlatform, component_id: e.target.value })}
             >
               <option value="">Select Component</option>
@@ -741,103 +741,11 @@ const DeploymentMatrix: React.FC = () => {
                 ))}
               </select>
             </div>
-          </div>
-        )}
-      </Dialog>
 
-      {/* Delete Node Dialog */}
-      <Dialog
-        isOpen={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        title="Delete Node"
-        footer={
-          
-          <DialogFooter
-            cancelText="Cancel"
-            confirmText="Delete Node"
-            onCancel={() => setDeleteDialogOpen(false)}
-            onConfirm={handleDeletePlatform}
-            danger
-          />
-        }
-      >
-        {selectedPlatform && (
-          <div className="text-center py-4">
-            <Server className="h-12 w-12 text-red-500 mx-auto" />
-            <h3 className="mt-2 text-lg font-medium text-gray-900">
-              Delete Node
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Are you sure you want to delete "{selectedPlatform.name}"? This action cannot be undone.
-            </p>
-          </div>
-        )}
-      </Dialog>
-
-      {/* Components Selection Dialog */}
-      <Dialog
-        isOpen={showComponentsDialog}
-        onClose={()=> setShowComponentsDialog(false)}
-        title="Select Components"
-        size="xl"
-        footer={
-          <DialogFooter
-            cancelText="Cancel"
-            confirmText="Save Components"
-            onCancel={() => setShowComponentsDialog(false)}
-            onConfirm={() => setShowComponentsDialog(false)}
-          />
-        }
-      >
-        <div className="space-y-6">
-          {componentTypes.map(type => (
-            <div key={type} className="space-y-2">
-              <h3 className="font-medium text-gray-900">{type}</h3>
-              <div className="grid grid-cols-3 gap-4">
-                {getComponentsForType(type).map(component => (
-                  <div
-                    key={component.id}
-                    className={`
-                      p-4 rounded-lg border cursor-pointer transition-colors
-                      ${isComponentSelected(component.id)
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-300'}
-                    `}
-                    onClick={() => handleComponentSelect(component)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {component.component_type} {component.version_number}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Hardware: {component.hardware || 'Not specified'}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Deployed: {new Date(component.deployment_date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Badge
-                        status={getStatusColor(component.status)}
-                        label={component.status}
-                      />
-                    </div>
-                    {component.known_issues && component.known_issues.length > 0 && (
-                      <div className="mt-2">
-                        <p className="text-sm text-red-600">
-                          Issues: {component.known_issues.length}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Dialog>
-    </div>
-  );
-};
-
-export default DeploymentMatrix;
+            <div>
+              <label htmlFor="edit-component" className="block text-sm font-medium text-gray-700">
+                Component
+              </label>
+              <select
+                id="edit-component"
+                className="mt-1 block w-full rounded-m
