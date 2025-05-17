@@ -24,6 +24,7 @@ export default {
       },
       borderColor: {
         'neon-blue': {
+          DEFAULT: 'var(--neon-blue)',
           '20': 'rgba(0, 243, 255, 0.2)',
           '40': 'rgba(0, 243, 255, 0.4)'
         }
