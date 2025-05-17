@@ -2,6 +2,13 @@ import React from 'react';
 import { Server, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 
 function Dashboard() {
+  const stats = {
+    totalPlatforms: 10,
+    activeDeployments: 7,
+    recentDeployments: 3,
+    criticalIssues: 1
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <div className="stat-card">
