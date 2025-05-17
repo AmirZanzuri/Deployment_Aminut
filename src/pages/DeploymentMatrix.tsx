@@ -190,8 +190,6 @@ const DeploymentMatrix: React.FC = () => {
   };
 
   // Group components by type
-  const componentTypes = ['Tactical Computer', 'Smart TMR', 'E-Lynks Radio', 'HQ Server', 'Client', 'GRX'];
-  
   const getComponentsForType = (type: string) => {
     return mockComponentVersions.filter(c => c.component_type === type);
   };
