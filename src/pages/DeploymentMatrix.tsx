@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
-import { Button } from '../components/ui/Button';
+import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { Filter, Search, Plus, Edit2, Trash2, Server, X, Link, ExternalLink, Cpu } from 'lucide-react';
@@ -33,6 +33,7 @@ const DeploymentMatrix: React.FC = () => {
   const [newPlatform, setNewPlatform] = useState({
     name: '',
     urn: '',
+    unit: '',
     type: 'HQ Server' as const,
     project_id: '',
     application_version_id: '',
@@ -72,6 +73,7 @@ const DeploymentMatrix: React.FC = () => {
     setNewPlatform({
       name: '',
       urn: '',
+      unit: '',
       type: 'HQ Server',
       project_id: newPlatform.project_id,
       application_version_id: '',
@@ -122,6 +124,10 @@ const DeploymentMatrix: React.FC = () => {
       header: 'URN',
       accessor: 'urn',
       className: 'font-mono',
+    },
+    {
+      header: 'Unit',
+      accessor: 'unit',
     },
     {
       header: 'Type',
@@ -345,6 +351,20 @@ const DeploymentMatrix: React.FC = () => {
               maxLength={7}
             />
           </div>
+
+          <div>
+            <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+              Unit
+            </label>
+            <input
+              type="text"
+              id="unit"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.unit}
+              onChange={(e) => setNewPlatform({ ...newPlatform, unit: e.target.value })}
+              placeholder="Unit A"
+            />
+          </div>
           
           <div>
             <label htmlFor="type" className="block text-sm font-medium text-gray-700">
@@ -459,6 +479,19 @@ const DeploymentMatrix: React.FC = () => {
                 value={selectedPlatform.urn}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, urn: e.target.value })}
                 maxLength={7}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-unit" className="block text-sm font-medium text-gray-700">
+                Unit
+              </label>
+              <input
+                type="text"
+                id="edit-unit"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.unit}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, unit: e.target.value })}
               />
             </div>
             

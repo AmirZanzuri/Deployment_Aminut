@@ -13,6 +13,7 @@ export interface Platform {
   id: string;
   name: string;
   urn: string;
+  unit: string;
   application_version_id: string;
   type: 'HQ Server' | 'Mounted Station';
   project_id: string;
