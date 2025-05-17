@@ -6,8 +6,10 @@ export default {
   ],
   theme: {
     extend: {
-      boxShadow: {
-        'neon': '0 0 10px var(--neon-blue)',
+      colors: {
+        'neon-blue': 'var(--neon-blue)',
+        'dark-blue': 'var(--dark-blue)',
+        'darker-blue': 'var(--darker-blue)',
       },
     },
   },
