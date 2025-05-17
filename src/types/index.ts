@@ -16,17 +16,6 @@ export interface Platform {
   project_id: string;
   component_id?: string;
   created_at: string;
-  component_nodes?: ComponentNode[];
-}
-
-export interface ComponentNode {
-  id: string;
-  platform_id: string;
-  component_id: string;
-  component_type: 'HQ Server' | 'Client' | 'Tactical Computer';
-  hardware: string;
-  status: 'active' | 'inactive';
-  created_at: string;
 }
 
 export interface ComponentVersion {
@@ -96,5 +85,4 @@ export interface Component {
   version: string;
   hardware: string;
   created_at: string;
-  node_id?: string;
 }

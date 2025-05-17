@@ -201,6 +201,7 @@ export const mockPlatforms: Platform[] = [
     application_version_id: '1',
     type: 'HQ Server',
     project_id: '1',
+    component_id: '1',
     created_at: randomPastDate(250),
   },
   {
@@ -210,6 +211,7 @@ export const mockPlatforms: Platform[] = [
     application_version_id: '1',
     type: 'Mounted Station',
     project_id: '1',
+    component_id: '2',
     created_at: randomPastDate(180),
   },
   {
@@ -219,6 +221,7 @@ export const mockPlatforms: Platform[] = [
     application_version_id: '2',
     type: 'HQ Server',
     project_id: '1',
+    component_id: '3',
     created_at: randomPastDate(120),
   },
   {
