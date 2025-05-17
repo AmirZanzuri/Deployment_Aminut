@@ -13,8 +13,8 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/matrix" element={<Platforms />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/platforms" element={<Platforms />} />
           <Route path="/versions" element={<Versions />} />
         </Routes>
       </Layout>

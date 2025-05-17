@@ -12,8 +12,8 @@ const Navbar: React.FC = () => {
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { path: '/matrix', label: 'Deployment Matrix', icon: <Server size={18} /> },
     { path: '/projects', label: 'Projects', icon: <Package size={18} /> },
-    { path: '/platforms', label: 'Platforms', icon: <Server size={18} /> },
     { path: '/versions', label: 'Versions', icon: <Versions size={18} /> },
   ];
 
