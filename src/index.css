@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-  --neon-blue-rgb: 0 255 255;       /* Neon Cyan */
-  --dark-blue: #0f172a;             /* Dark background */
-  --darker-blue: #0a0f1c;           /* Even darker background */
-}
-  
+    --neon-blue: #00f3ff;
+    --dark-blue: #0a192f;
+    --darker-blue: #060d1a;
+  }
+
   body {
     @apply bg-darker-blue text-neon-blue;
   }
@@ -16,10 +16,17 @@
 
 @layer components {
   .stat-card {
-    @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue/40 hover:shadow-neon relative overflow-hidden;
+    @apply bg-dark-blue border border-neon-blue/20 rounded-lg p-6 
+           transition-all duration-200 hover:border-neon-blue/40 
+           hover:shadow-neon relative overflow-hidden;
   }
 
   .futuristic-card {
-    @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg shadow-neon-lg;
+    @apply bg-dark-blue border border-neon-blue/20 rounded-lg 
+           shadow-neon-lg transition-all duration-200;
+  }
+
+  .neon-text {
+    @apply text-neon-blue;
   }
 }
