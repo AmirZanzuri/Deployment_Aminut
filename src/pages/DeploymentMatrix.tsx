@@ -41,20 +41,17 @@ const DeploymentMatrix: React.FC = () => {
   });
 
   useEffect(() => {
-    // Simulate API call
     setTimeout(() => {
       setPlatforms(mockPlatforms);
       setComponentVersions(mockComponentVersions);
       setProjects(mockProjects);
       setApplicationVersions(mockApplicationVersions);
       
-      // Extract unique component types
       const types = Array.from(new Set(mockComponentVersions.map(c => c.component_type)));
       setComponentTypes(types);
       
       setIsLoading(false);
 
-      // Set default project_id for new platform
       if (mockProjects.length > 0) {
         setNewPlatform(prev => ({ ...prev, project_id: mockProjects[0].id }));
       }
@@ -232,9 +229,9 @@ const DeploymentMatrix: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
+          <h1 className="text-2xl font-bold neon-text">Deployment Matrix</h1>
           <select
-            className="border rounded-md px-3 py-1.5 text-sm"
+            className="bg-dark-blue border border-neon-blue/30 rounded-md px-3 py-1.5 text-sm text-neon-blue"
             value={groupBy}
             onChange={(e) => setGroupBy(e.target.value as 'project' | 'type' | 'none')}
           >
@@ -257,18 +254,18 @@ const DeploymentMatrix: React.FC = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neon-blue/40 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Search platforms..."
-                  className="pl-10 pr-4 py-2 w-full border rounded-lg"
+                  className="pl-10 pr-4 py-2 w-full bg-dark-blue border border-neon-blue/30 rounded-lg text-neon-blue placeholder-neon-blue/40"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
             <select
-              className="border rounded-lg px-4 py-2"
+              className="bg-dark-blue border border-neon-blue/30 rounded-lg px-4 py-2 text-neon-blue"
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
             >
@@ -278,7 +275,7 @@ const DeploymentMatrix: React.FC = () => {
               ))}
             </select>
             <select
-              className="border rounded-lg px-4 py-2"
+              className="bg-dark-blue border border-neon-blue/30 rounded-lg px-4 py-2 text-neon-blue"
               value={selectedComponentType}
               onChange={(e) => setSelectedComponentType(e.target.value)}
             >
@@ -294,8 +291,8 @@ const DeploymentMatrix: React.FC = () => {
           {Object.entries(groupedPlatforms).map(([group, items]) => (
             <div key={group}>
               {groupBy !== 'none' && (
-                <div className="px-6 py-3 border-b border-gray-200">
-                  <h2 className="text-lg font-medium text-gray-900">{group}</h2>
+                <div className="px-6 py-3 border-b border-neon-blue/20">
+                  <h2 className="text-lg font-medium neon-text">{group}</h2>
                 </div>
               )}
               <Table
@@ -325,26 +322,26 @@ const DeploymentMatrix: React.FC = () => {
       >
         <div className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="block text-sm font-medium text-neon-blue">
               Platform Name
             </label>
             <input
               type="text"
               id="name"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
               value={newPlatform.name}
               onChange={(e) => setNewPlatform({ ...newPlatform, name: e.target.value })}
             />
           </div>
 
           <div>
-            <label htmlFor="urn" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="urn" className="block text-sm font-medium text-neon-blue">
               URN
             </label>
             <input
               type="text"
               id="urn"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue font-mono"
               value={newPlatform.urn}
               onChange={(e) => setNewPlatform({ ...newPlatform, urn: e.target.value })}
               placeholder="1234567"
@@ -353,13 +350,13 @@ const DeploymentMatrix: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="unit" className="block text-sm font-medium text-neon-blue">
               Unit
             </label>
             <input
               type="text"
               id="unit"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
               value={newPlatform.unit}
               onChange={(e) => setNewPlatform({ ...newPlatform, unit: e.target.value })}
               placeholder="Unit A"
@@ -367,12 +364,12 @@ const DeploymentMatrix: React.FC = () => {
           </div>
           
           <div>
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="type" className="block text-sm font-medium text-neon-blue">
               Type
             </label>
             <select
               id="type"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
               value={newPlatform.type}
               onChange={(e) => setNewPlatform({ ...newPlatform, type: e.target.value as Platform['type'] })}
             >
@@ -382,12 +379,12 @@ const DeploymentMatrix: React.FC = () => {
           </div>
           
           <div>
-            <label htmlFor="project" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="project" className="block text-sm font-medium text-neon-blue">
               Project
             </label>
             <select
               id="project"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
               value={newPlatform.project_id}
               onChange={(e) => setNewPlatform({ ...newPlatform, project_id: e.target.value })}
             >
@@ -400,12 +397,12 @@ const DeploymentMatrix: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="component" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="component" className="block text-sm font-medium text-neon-blue">
               Hardware Component
             </label>
             <select
               id="component"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
               value={newPlatform.component_id}
               onChange={(e) => setNewPlatform({ ...newPlatform, component_id: e.target.value })}
             >
@@ -419,12 +416,12 @@ const DeploymentMatrix: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="version" className="block text-sm font-medium text-neon-blue">
               Application Version
             </label>
             <select
               id="version"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
               value={newPlatform.application_version_id}
               onChange={(e) => setNewPlatform({ ...newPlatform, application_version_id: e.target.value })}
             >
@@ -456,26 +453,26 @@ const DeploymentMatrix: React.FC = () => {
         {selectedPlatform && (
           <div className="space-y-4">
             <div>
-              <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-name" className="block text-sm font-medium text-neon-blue">
                 Platform Name
               </label>
               <input
                 type="text"
                 id="edit-name"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
                 value={selectedPlatform.name}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, name: e.target.value })}
               />
             </div>
 
             <div>
-              <label htmlFor="edit-urn" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-urn" className="block text-sm font-medium text-neon-blue">
                 URN
               </label>
               <input
                 type="text"
                 id="edit-urn"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue font-mono"
                 value={selectedPlatform.urn}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, urn: e.target.value })}
                 maxLength={7}
@@ -483,25 +480,25 @@ const DeploymentMatrix: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="edit-unit" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-unit" className="block text-sm font-medium text-neon-blue">
                 Unit
               </label>
               <input
                 type="text"
                 id="edit-unit"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
                 value={selectedPlatform.unit}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, unit: e.target.value })}
               />
             </div>
             
             <div>
-              <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-type" className="block text-sm font-medium text-neon-blue">
                 Type
               </label>
               <select
                 id="edit-type"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
                 value={selectedPlatform.type}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, type: e.target.value as Platform['type'] })}
               >
@@ -511,12 +508,12 @@ const DeploymentMatrix: React.FC = () => {
             </div>
             
             <div>
-              <label htmlFor="edit-project" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-project" className="block text-sm font-medium text-neon-blue">
                 Project
               </label>
               <select
                 id="edit-project"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
                 value={selectedPlatform.project_id}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, project_id: e.target.value })}
               >
@@ -529,12 +526,12 @@ const DeploymentMatrix: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="edit-component" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-component" className="block text-sm font-medium text-neon-blue">
                 Hardware Component
               </label>
               <select
                 id="edit-component"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
                 value={selectedPlatform.component_id}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, component_id: e.target.value })}
               >
@@ -548,12 +545,12 @@ const DeploymentMatrix: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="edit-version" className="block text-sm font-medium text-neon-blue">
                 Application Version
               </label>
               <select
                 id="edit-version"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="mt-1 block w-full bg-dark-blue border border-neon-blue/30 rounded-md shadow-sm focus:border-neon-blue focus:ring focus:ring-neon-blue/20 text-neon-blue"
                 value={selectedPlatform.application_version_id}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, application_version_id: e.target.value })}
               >
@@ -586,10 +583,10 @@ const DeploymentMatrix: React.FC = () => {
       >
         <div className="text-center py-4">
           <Server className="h-12 w-12 text-red-500 mx-auto" />
-          <h3 className="mt-2 text-lg font-medium text-gray-900">
+          <h3 className="mt-2 text-lg font-medium text-neon-blue">
             Delete Platform
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-neon-blue/70">
             Are you sure you want to delete "{selectedPlatform?.name}"? This action cannot be undone.
           </p>
         </div>
@@ -600,6 +597,7 @@ const DeploymentMatrix: React.FC = () => {
         isOpen={!!showComponentDialogForPlatform}
         onClose={() => setShowComponentDialogForPlatform(null)}
         title="Select Components"
+        size="lg"
         footer={
           <DialogFooter
             cancelText="Close"
@@ -614,8 +612,10 @@ const DeploymentMatrix: React.FC = () => {
             return (
               <div
                 key={component.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                  isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
+                className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                  isSelected 
+                    ? 'border-neon-blue bg-neon-blue/10' 
+                    : 'border-neon-blue/30 hover:border-neon-blue/60 hover:bg-neon-blue/5'
                 }`}
                 onClick={() => {
                   if (showComponentDialogForPlatform) {
@@ -625,8 +625,8 @@ const DeploymentMatrix: React.FC = () => {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium text-gray-900">{component.name}</h3>
-                    <p className="text-sm text-gray-500">{component.type}</p>
+                    <h3 className="font-medium text-neon-blue">{component.name}</h3>
+                    <p className="text-sm text-neon-blue/70">{component.type}</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Badge
@@ -635,7 +635,7 @@ const DeploymentMatrix: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="mt-2 text-sm text-gray-600">
+                <div className="mt-2 text-sm text-neon-blue/70">
                   <p>{component.description}</p>
                   <p className="mt-1 font-mono">{component.ip}</p>
                 </div>
