@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
@@ -6,10 +6,10 @@ import Table from '../components/ui/Table';
 import { Component } from '../types';
 import { Plus, Edit2, Trash2, Cpu, ChevronDown, ChevronRight } from 'lucide-react';
 import { mockElynxVersions, mockGrxVersions, mockSmartTmrVersions } from '../services/mockData';
+import { useComponentStore } from '../store/useComponentStore';
 
 const Components: React.FC = () => {
-  const [components, setComponents] = useState<Component[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { components, addComponent, updateComponent, deleteComponent } = useComponentStore();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -21,34 +21,8 @@ const Components: React.FC = () => {
     description: '',
     ip: '',
     version: '',
+    hardware: '',
   });
-
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setComponents([
-        {
-          id: '1',
-          name: 'Main Computer',
-          type: 'Tactical Computer',
-          description: 'Primary tactical computer system',
-          ip: '192.168.1.100',
-          version: '1.0.0',
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          name: 'Radio System',
-          type: 'E-Lynks Radio',
-          description: 'Communication radio system',
-          ip: '192.168.1.101',
-          version: '2.1.0',
-          created_at: new Date().toISOString(),
-        },
-      ]);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
 
   const handleCreateComponent = () => {
     const componentToAdd: Component = {
@@ -57,7 +31,7 @@ const Components: React.FC = () => {
       created_at: new Date().toISOString(),
     };
 
-    setComponents([...components, componentToAdd]);
+    addComponent(componentToAdd);
     setCreateDialogOpen(false);
     setNewComponent({
       name: '',
@@ -65,27 +39,20 @@ const Components: React.FC = () => {
       description: '',
       ip: '',
       version: '',
+      hardware: '',
     });
   };
 
   const handleEditComponent = () => {
     if (!selectedComponent) return;
-
-    const updatedComponents = components.map(c =>
-      c.id === selectedComponent.id ? selectedComponent : c
-    );
-
-    setComponents(updatedComponents);
+    updateComponent(selectedComponent);
     setEditDialogOpen(false);
     setSelectedComponent(null);
   };
 
   const handleDeleteComponent = () => {
     if (!selectedComponent) return;
-
-    const updatedComponents = components.filter(c => c.id !== selectedComponent.id);
-
-    setComponents(updatedComponents);
+    deleteComponent(selectedComponent.id);
     setDeleteDialogOpen(false);
     setSelectedComponent(null);
   };
@@ -205,52 +172,43 @@ const Components: React.FC = () => {
       </div>
 
       <Card>
-        {isLoading ? (
-          <div className="animate-pulse">
-            <div className="h-10 bg-gray-200 rounded mb-2"></div>
-            {[...Array(5)].map((_, index) => (
-              <div key={index} className="h-16 bg-gray-100 rounded mb-2"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-200">
-            {componentTypes.map(type => {
-              const typeComponents = groupedComponents[type] || [];
-              const isExpanded = expandedGroups[type];
+        <div className="divide-y divide-gray-200">
+          {componentTypes.map(type => {
+            const typeComponents = groupedComponents[type] || [];
+            const isExpanded = expandedGroups[type];
 
-              return (
-                <div key={type} className="py-4">
-                  <button
-                    className="w-full flex items-center justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                    onClick={() => toggleGroup(type)}
-                  >
-                    <div className="flex items-center space-x-2">
-                      {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-                      <span className="font-medium text-gray-900">{type}</span>
-                      <span className="text-sm text-gray-500">({typeComponents.length})</span>
-                    </div>
-                  </button>
-                  
-                  {isExpanded && typeComponents.length > 0 && (
-                    <div className="mt-2">
-                      <Table
-                        columns={columns}
-                        data={typeComponents}
-                        keyExtractor={(component) => component.id}
-                      />
-                    </div>
-                  )}
-                  
-                  {isExpanded && typeComponents.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                      No components of this type
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+            return (
+              <div key={type} className="py-4">
+                <button
+                  className="w-full flex items-center justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  onClick={() => toggleGroup(type)}
+                >
+                  <div className="flex items-center space-x-2">
+                    {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                    <span className="font-medium text-gray-900">{type}</span>
+                    <span className="text-sm text-gray-500">({typeComponents.length})</span>
+                  </div>
+                </button>
+                
+                {isExpanded && typeComponents.length > 0 && (
+                  <div className="mt-2">
+                    <Table
+                      columns={columns}
+                      data={typeComponents}
+                      keyExtractor={(component) => component.id}
+                    />
+                  </div>
+                )}
+                
+                {isExpanded && typeComponents.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No components of this type
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Card>
 
       {/* Create Component Dialog */}
