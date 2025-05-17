@@ -9,9 +9,11 @@ import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVers
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 import { Link as RouterLink } from 'react-router-dom';
 import { useComponentStore } from '../store/useComponentStore';
+import { useSelectedComponentsStore } from '../store/useSelectedComponentsStore';
 
 const DeploymentMatrix: React.FC = () => {
   const { components: availableComponents } = useComponentStore();
+  const { selectedComponents, toggleComponent } = useSelectedComponentsStore();
   const [isLoading, setIsLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [componentVersions, setComponentVersions] = useState<ComponentVersion[]>([]);
@@ -26,6 +28,7 @@ const DeploymentMatrix: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
+  const [showComponentDialogForPlatform, setShowComponentDialogForPlatform] = useState<string | null>(null);
 
   const [newPlatform, setNewPlatform] = useState({
     name: '',
@@ -106,6 +109,10 @@ const DeploymentMatrix: React.FC = () => {
     return availableComponents.find(c => c.id === componentId);
   };
 
+  const handleComponentSelection = (platformId: string) => {
+    setShowComponentDialogForPlatform(platformId);
+  };
+
   const columns = [
     {
       header: 'Name',
@@ -141,6 +148,20 @@ const DeploymentMatrix: React.FC = () => {
           </RouterLink>
         );
       },
+    },
+    {
+      header: 'Components',
+      accessor: (platform: Platform) => (
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleComponentSelection(platform.id)}
+          >
+            {selectedComponents[platform.id]?.length || 0} Selected
+          </Button>
+        </div>
+      ),
     },
     {
       header: 'Actions',
@@ -492,6 +513,57 @@ const DeploymentMatrix: React.FC = () => {
           <p className="mt-1 text-sm text-gray-500">
             Are you sure you want to delete "{selectedPlatform?.name}"? This action cannot be undone.
           </p>
+        </div>
+      </Dialog>
+
+      {/* Component Selection Dialog */}
+      <Dialog
+        isOpen={!!showComponentDialogForPlatform}
+        onClose={() => setShowComponentDialogForPlatform(null)}
+        title="Select Components"
+        footer={
+          <DialogFooter
+            cancelText="Close"
+            onCancel={() => setShowComponentDialogForPlatform(null)}
+          />
+        }
+      >
+        <div className="space-y-4">
+          {availableComponents.map((component) => {
+            const isSelected = selectedComponents[showComponentDialogForPlatform || '']?.includes(component.id);
+            
+            return (
+              <div
+                key={component.id}
+                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                  isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
+                }`}
+                onClick={() => {
+                  if (showComponentDialogForPlatform) {
+                    toggleComponent(showComponentDialogForPlatform, component.id);
+                  }
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-gray-900">{component.name}</h3>
+                    <p className="text-sm text-gray-500">{component.type}</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge
+                      status={isSelected ? 'success' : 'default'}
+                      label={isSelected ? 'Selected' : 'Available'}
+                    />
+                  </div>
+                </div>
+                <div className="mt-2 text-sm text-gray-600">
+                  <p>{component.description}</p>
+                  <p className="mt-1 font-mono">{component.ip}</p>
+                  <p className="mt-1">Hardware: {component.hardware}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </Dialog>
     </div>
