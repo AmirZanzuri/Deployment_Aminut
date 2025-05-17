@@ -5,44 +5,13 @@
 @layer base {
   :root {
     --neon-blue: #00f3ff;
-    --dark-blue: #001220;
-    --darker-blue: #000a11;
+    --dark-blue: #0a192f;
+    --darker-blue: #060d1a;
   }
 }
 
 @layer components {
   .stat-card {
     @apply bg-dark-blue border border-neon-blue/20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue/40 hover:shadow-lg relative overflow-hidden;
-  }
-
-  .stat-icon {
-    @apply bg-neon-blue/10 p-3 rounded-lg mb-4;
-  }
-
-  .stat-label {
-    @apply text-sm font-medium text-neon-blue/60;
-  }
-
-  .stat-value {
-    @apply text-2xl font-semibold text-neon-blue mt-1;
-  }
-
-  .futuristic-card {
-    @apply bg-dark-blue border border-neon-blue/20 rounded-lg shadow-lg overflow-hidden transition-all duration-200 hover:border-neon-blue/40;
-  }
-
-  .neon-text {
-    @apply text-neon-blue;
-  }
-
-  .shadow-neon {
-    @apply shadow-[0_0_15px_rgba(0,243,255,0.1)];
-  }
-
-  .futuristic-grid {
-    background-image: linear-gradient(var(--neon-blue) 1px, transparent 1px),
-      linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
-    background-size: 20px 20px;
-    opacity: 0.05;
   }
 }
