@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --neon-blue: #00f0ff;
-  --dark-blue: #001a2c;
-  --darker-blue: #000a14;
-}
-
-body {
-  background-color: var(--darker-blue);
-  color: var(--neon-blue);
-}
-
 @layer base {
+  :root {
+    --neon-blue: #00f0ff;
+    --dark-blue: #001a2c;
+    --darker-blue: #000a14;
+  }
+
+  body {
+    background-color: var(--darker-blue);
+    color: var(--neon-blue);
+  }
+
   input[type="text"],
   input[type="number"],
   input[type="email"],
