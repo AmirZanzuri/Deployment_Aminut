@@ -3,7 +3,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
-import { Platform, ComponentVersion, Project } from '../types';
+import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 import { Filter, DownloadCloud, Search, Layers } from 'lucide-react';
 
 type GroupingOption = 'project' | 'type' | 'version';
@@ -13,6 +13,7 @@ const DeploymentMatrix: React.FC = () => {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [componentVersions, setComponentVersions] = useState<ComponentVersion[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [applicationVersions, setApplicationVersions] = useState<ApplicationVersion[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [componentTypes, setComponentTypes] = useState<string[]>([]);
@@ -25,6 +26,7 @@ const DeploymentMatrix: React.FC = () => {
       setPlatforms(mockPlatforms);
       setComponentVersions(mockComponentVersions);
       setProjects(mockProjects);
+      setApplicationVersions(mockApplicationVersions);
       
       // Extract unique component types
       const types = Array.from(new Set(mockComponentVersions.map(c => c.component_type)));
@@ -83,7 +85,7 @@ const DeploymentMatrix: React.FC = () => {
           groupKey = platform.type;
           break;
         case 'version':
-          const version = mockApplicationVersions.find(v => v.id === platform.application_version_id);
+          const version = applicationVersions.find(v => v.id === platform.application_version_id);
           groupKey = version ? version.version_number : 'Unknown Version';
           break;
       }
