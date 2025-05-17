@@ -4,31 +4,23 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
-import { ApplicationVersion, Platform } from '../types';
-import { Plus, Trash2, Edit2, Box } from 'lucide-react';
-import { mockPlatforms } from '../services/mockData';
-
-const mockVersions: ApplicationVersion[] = [
-  {
-    id: '1',
-    version_number: '1.0.0',
-    ecix_version: '2.1.0',
-    core_version: '3.0.0',
-    tiger_x_version: '1.5.0',
-    map_core_version: '4.2.1',
-    created_at: new Date().toISOString(),
-    platforms_count: 3,
-  },
-];
+import { ApplicationVersion, Platform, ElynxVersion, GrxVersion } from '../types';
+import { Plus, Radio, Cpu } from 'lucide-react';
+import { mockPlatforms, mockApplicationVersions, mockElynxVersions, mockGrxVersions } from '../services/mockData';
 
 const Versions: React.FC = () => {
-  const [versions, setVersions] = useState<ApplicationVersion[]>([]);
+  const [applicationVersions, setApplicationVersions] = useState<ApplicationVersion[]>([]);
+  const [elynxVersions, setElynxVersions] = useState<ElynxVersion[]>([]);
+  const [grxVersions, setGrxVersions] = useState<GrxVersion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVersion, setSelectedVersion] = useState<ApplicationVersion | null>(null);
   const [showPlatformsDialog, setShowPlatformsDialog] = useState(false);
   const [showNewVersionDialog, setShowNewVersionDialog] = useState(false);
+  const [showNewElynxDialog, setShowNewElynxDialog] = useState(false);
+  const [showNewGrxDialog, setShowNewGrxDialog] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const [showPlatformDetailsDialog, setShowPlatformDetailsDialog] = useState(false);
+
   const [newVersion, setNewVersion] = useState({
     version_number: '',
     ecix_version: '',
@@ -37,23 +29,37 @@ const Versions: React.FC = () => {
     map_core_version: '',
   });
 
+  const [newElynxVersion, setNewElynxVersion] = useState({
+    version_number: '',
+    radio_version: '',
+    firmware_version: '',
+  });
+
+  const [newGrxVersion, setNewGrxVersion] = useState({
+    version_number: '',
+    software_version: '',
+    protocol_version: '',
+  });
+
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
-      setVersions(mockVersions);
+      setApplicationVersions(mockApplicationVersions);
+      setElynxVersions(mockElynxVersions);
+      setGrxVersions(mockGrxVersions);
       setIsLoading(false);
     }, 1000);
   }, []);
 
   const handleCreateVersion = () => {
     const versionToAdd: ApplicationVersion = {
-      id: (versions.length + 1).toString(),
+      id: (applicationVersions.length + 1).toString(),
       ...newVersion,
       created_at: new Date().toISOString(),
       platforms_count: 0,
     };
 
-    setVersions([...versions, versionToAdd]);
+    setApplicationVersions([...applicationVersions, versionToAdd]);
     setShowNewVersionDialog(false);
     setNewVersion({
       version_number: '',
@@ -64,7 +70,39 @@ const Versions: React.FC = () => {
     });
   };
 
-  const columns = [
+  const handleCreateElynxVersion = () => {
+    const versionToAdd: ElynxVersion = {
+      id: (elynxVersions.length + 1).toString(),
+      ...newElynxVersion,
+      created_at: new Date().toISOString(),
+    };
+
+    setElynxVersions([...elynxVersions, versionToAdd]);
+    setShowNewElynxDialog(false);
+    setNewElynxVersion({
+      version_number: '',
+      radio_version: '',
+      firmware_version: '',
+    });
+  };
+
+  const handleCreateGrxVersion = () => {
+    const versionToAdd: GrxVersion = {
+      id: (grxVersions.length + 1).toString(),
+      ...newGrxVersion,
+      created_at: new Date().toISOString(),
+    };
+
+    setGrxVersions([...grxVersions, versionToAdd]);
+    setShowNewGrxDialog(false);
+    setNewGrxVersion({
+      version_number: '',
+      software_version: '',
+      protocol_version: '',
+    });
+  };
+
+  const applicationColumns = [
     {
       header: 'Version Number',
       accessor: 'version_number',
@@ -96,13 +134,53 @@ const Versions: React.FC = () => {
             setShowPlatformsDialog(true);
           }}
         >
-          {version.platforms_count} Platforms
+          {version.platforms_count || 0} Platforms
         </Button>
       ),
     },
     {
       header: 'Created',
       accessor: (version: ApplicationVersion) => 
+        new Date(version.created_at).toLocaleDateString(),
+    },
+  ];
+
+  const elynxColumns = [
+    {
+      header: 'Version Number',
+      accessor: 'version_number',
+    },
+    {
+      header: 'Radio Version',
+      accessor: 'radio_version',
+    },
+    {
+      header: 'Firmware Version',
+      accessor: 'firmware_version',
+    },
+    {
+      header: 'Created',
+      accessor: (version: ElynxVersion) => 
+        new Date(version.created_at).toLocaleDateString(),
+    },
+  ];
+
+  const grxColumns = [
+    {
+      header: 'Version Number',
+      accessor: 'version_number',
+    },
+    {
+      header: 'Software Version',
+      accessor: 'software_version',
+    },
+    {
+      header: 'Protocol Version',
+      accessor: 'protocol_version',
+    },
+    {
+      header: 'Created',
+      accessor: (version: GrxVersion) => 
         new Date(version.created_at).toLocaleDateString(),
     },
   ];
@@ -123,10 +201,6 @@ const Versions: React.FC = () => {
       ),
     },
     {
-      header: 'Version',
-      accessor: 'version',
-    },
-    {
       header: 'Type',
       accessor: (platform: Platform) => (
         <span className="capitalize">{platform.type}</span>
@@ -144,32 +218,81 @@ const Versions: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Application Versions</h1>
-        <Button
-          variant="primary"
-          icon={<Plus size={16} />}
-          onClick={() => setShowNewVersionDialog(true)}
-        >
-          New Version
-        </Button>
+    <div className="space-y-8">
+      {/* Application Versions Section */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-900">Application Versions</h2>
+          <Button
+            variant="primary"
+            icon={<Plus size={16} />}
+            onClick={() => setShowNewVersionDialog(true)}
+          >
+            New Version
+          </Button>
+        </div>
+
+        <Card>
+          <Table
+            columns={applicationColumns}
+            data={applicationVersions}
+            keyExtractor={(version) => version.id}
+            isLoading={isLoading}
+          />
+        </Card>
       </div>
 
-      <Card>
-        <Table
-          columns={columns}
-          data={versions}
-          keyExtractor={(version) => version.id}
-          isLoading={isLoading}
-        />
-      </Card>
+      {/* E-lynx Versions Section */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-900">E-lynx Versions</h2>
+          <Button
+            variant="primary"
+            icon={<Radio size={16} />}
+            onClick={() => setShowNewElynxDialog(true)}
+          >
+            New E-lynx Version
+          </Button>
+        </div>
 
-      {/* New Version Dialog */}
+        <Card>
+          <Table
+            columns={elynxColumns}
+            data={elynxVersions}
+            keyExtractor={(version) => version.id}
+            isLoading={isLoading}
+          />
+        </Card>
+      </div>
+
+      {/* GRX Versions Section */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-900">GRX Versions</h2>
+          <Button
+            variant="primary"
+            icon={<Cpu size={16} />}
+            onClick={() => setShowNewGrxDialog(true)}
+          >
+            New GRX Version
+          </Button>
+        </div>
+
+        <Card>
+          <Table
+            columns={grxColumns}
+            data={grxVersions}
+            keyExtractor={(version) => version.id}
+            isLoading={isLoading}
+          />
+        </Card>
+      </div>
+
+      {/* New Application Version Dialog */}
       <Dialog
         isOpen={showNewVersionDialog}
         onClose={() => setShowNewVersionDialog(false)}
-        title="Create New Version"
+        title="Create New Application Version"
         footer={
           <DialogFooter
             cancelText="Cancel"
@@ -252,6 +375,124 @@ const Versions: React.FC = () => {
         </div>
       </Dialog>
 
+      {/* New E-lynx Version Dialog */}
+      <Dialog
+        isOpen={showNewElynxDialog}
+        onClose={() => setShowNewElynxDialog(false)}
+        title="Create New E-lynx Version"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Create Version"
+            onCancel={() => setShowNewElynxDialog(false)}
+            onConfirm={handleCreateElynxVersion}
+          />
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="elynx_version_number" className="block text-sm font-medium text-gray-700">
+              Version Number
+            </label>
+            <input
+              type="text"
+              id="elynx_version_number"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newElynxVersion.version_number}
+              onChange={(e) => setNewElynxVersion({ ...newElynxVersion, version_number: e.target.value })}
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="radio_version" className="block text-sm font-medium text-gray-700">
+              Radio Version
+            </label>
+            <input
+              type="text"
+              id="radio_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newElynxVersion.radio_version}
+              onChange={(e) => setNewElynxVersion({ ...newElynxVersion, radio_version: e.target.value })}
+              placeholder="2.1.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="firmware_version" className="block text-sm font-medium text-gray-700">
+              Firmware Version
+            </label>
+            <input
+              type="text"
+              id="firmware_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newElynxVersion.firmware_version}
+              onChange={(e) => setNewElynxVersion({ ...newElynxVersion, firmware_version: e.target.value })}
+              placeholder="3.0.0"
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      {/* New GRX Version Dialog */}
+      <Dialog
+        isOpen={showNewGrxDialog}
+        onClose={() => setShowNewGrxDialog(false)}
+        title="Create New GRX Version"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Create Version"
+            onCancel={() => setShowNewGrxDialog(false)}
+            onConfirm={handleCreateGrxVersion}
+          />
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="grx_version_number" className="block text-sm font-medium text-gray-700">
+              Version Number
+            </label>
+            <input
+              type="text"
+              id="grx_version_number"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newGrxVersion.version_number}
+              onChange={(e) => setNewGrxVersion({ ...newGrxVersion, version_number: e.target.value })}
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="software_version" className="block text-sm font-medium text-gray-700">
+              Software Version
+            </label>
+            <input
+              type="text"
+              id="software_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newGrxVersion.software_version}
+              onChange={(e) => setNewGrxVersion({ ...newGrxVersion, software_version: e.target.value })}
+              placeholder="2.1.0"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="protocol_version" className="block text-sm font-medium text-gray-700">
+              Protocol Version
+            </label>
+            <input
+              type="text"
+              id="protocol_version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newGrxVersion.protocol_version}
+              onChange={(e) => setNewGrxVersion({ ...newGrxVersion, protocol_version: e.target.value })}
+              placeholder="3.0.0"
+            />
+          </div>
+        </div>
+      </Dialog>
+
       {/* Platforms Dialog */}
       <Dialog
         isOpen={showPlatformsDialog}
@@ -279,6 +520,7 @@ const Versions: React.FC = () => {
                   <h3 className="text-sm font-medium text-gray-500">Tiger-X Version</h3>
                   <p className="mt-1 text-lg font-semibold">{selectedVersion.tiger_x_version}</p>
                 </div>
+                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="text-sm font-medium text-gray-500">MapCore Version</h3>
                   <p className="mt-1 text-lg font-semibold">{selectedVersion.map_core_version}</p>
@@ -287,7 +529,7 @@ const Versions: React.FC = () => {
 
               <Table
                 columns={platformColumns}
-                data={mockPlatforms.slice(0, 3)} // Simulated connected platforms
+                data={mockPlatforms.filter(p => p.application_version_id === selectedVersion.id)}
                 keyExtractor={(platform) => platform.id}
                 isLoading={false}
               />
@@ -309,10 +551,6 @@ const Versions: React.FC = () => {
               <div>
                 <label className="text-sm font-medium text-gray-500">Name</label>
                 <p className="mt-1 text-sm text-gray-900">{selectedPlatform.name}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-500">Version</label>
-                <p className="mt-1 text-sm text-gray-900">{selectedPlatform.version}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-500">Type</label>

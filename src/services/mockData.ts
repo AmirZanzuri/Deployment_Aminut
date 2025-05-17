@@ -1,4 +1,4 @@
-import { Project, Platform, ComponentVersion, Product } from '../types';
+import { Project, Platform, ComponentVersion, Product, ApplicationVersion, ElynxVersion, GrxVersion } from '../types';
 
 // Generate a random date in the past (up to maxDays ago)
 const randomPastDate = (maxDays = 365) => {
@@ -52,7 +52,7 @@ export const mockProjects: Project[] = [
 ];
 
 // Mock Application Versions
-export const mockApplicationVersions = [
+export const mockApplicationVersions: ApplicationVersion[] = [
   {
     id: '1',
     version_number: '1.0.0',
@@ -70,6 +70,42 @@ export const mockApplicationVersions = [
     tiger_x_version: '1.6.0',
     map_core_version: '4.3.0',
     created_at: randomPastDate(10),
+  },
+];
+
+// Mock E-lynx Versions
+export const mockElynxVersions: ElynxVersion[] = [
+  {
+    id: '1',
+    version_number: '1.0.0',
+    radio_version: '2.1.0',
+    firmware_version: '3.0.0',
+    created_at: randomPastDate(15),
+  },
+  {
+    id: '2',
+    version_number: '1.1.0',
+    radio_version: '2.2.0',
+    firmware_version: '3.1.0',
+    created_at: randomPastDate(5),
+  },
+];
+
+// Mock GRX Versions
+export const mockGrxVersions: GrxVersion[] = [
+  {
+    id: '1',
+    version_number: '1.0.0',
+    software_version: '2.1.0',
+    protocol_version: '3.0.0',
+    created_at: randomPastDate(12),
+  },
+  {
+    id: '2',
+    version_number: '1.1.0',
+    software_version: '2.2.0',
+    protocol_version: '3.1.0',
+    created_at: randomPastDate(3),
   },
 ];
 

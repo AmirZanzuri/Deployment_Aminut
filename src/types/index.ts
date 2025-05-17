@@ -49,4 +49,20 @@ export interface ApplicationVersion {
   projects?: Project[];
 }
 
+export interface ElynxVersion {
+  id: string;
+  version_number: string;
+  radio_version: string;
+  firmware_version: string;
+  created_at: string;
+}
+
+export interface GrxVersion {
+  id: string;
+  version_number: string;
+  software_version: string;
+  protocol_version: string;
+  created_at: string;
+}
+
 export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';
