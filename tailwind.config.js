@@ -11,6 +11,9 @@ export default {
         'dark-blue': 'var(--dark-blue)',
         'darker-blue': 'var(--darker-blue)',
       },
+      boxShadow: {
+        'neon': '0 0 15px rgb(var(--neon-blue-rgb) / 0.3)',
+      },
     },
   },
   plugins: [],
