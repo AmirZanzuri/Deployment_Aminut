@@ -8,10 +8,14 @@
     --dark-blue: #0a192f;
     --darker-blue: #060d1a;
   }
+
+  body {
+    @apply bg-darker-blue text-neon-blue;
+  }
 }
 
 @layer components {
   .stat-card {
-    @apply bg-[var(--dark-blue)] border border-neon-blue-20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue-40 hover:shadow-lg relative overflow-hidden;
+    @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue/40 hover:shadow-lg;
   }
 }
