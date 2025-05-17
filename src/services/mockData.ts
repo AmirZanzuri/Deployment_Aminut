@@ -262,3 +262,7 @@ export const mockPlatforms: Platform[] = [
     created_at: randomPastDate(40),
   },
 ];
+
+export { mockPlatforms, mockProjects }
+
+export { mockComponentVersions, mockApplicationVersions }
