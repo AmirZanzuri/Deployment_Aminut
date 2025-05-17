@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button } from '../components/ui/Button';
-import { Dialog } from '../components/ui/Dialog';
-import { DialogFooter } from '../components/ui/Dialog';
+import Dialog, { DialogFooter } from '../components/ui/Dialog';
 
 const DeploymentMatrix = () => {
   const [selectedPlatform, setSelectedPlatform] = React.useState({ component_id: '' });

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import Dialog from '../components/ui/Dialog';
-import { DialogFooter } from '../components/ui/Dialog';
+import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { Component } from '../types';
 import { Plus, Edit2, Trash2, Cpu, ChevronDown, ChevronRight } from 'lucide-react';
