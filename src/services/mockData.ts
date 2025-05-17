@@ -11,39 +11,34 @@ const randomPastDate = (maxDays = 365) => {
 export const mockComponents: Component[] = [
   {
     id: '1',
-    name: 'Server Node A',
+    name: 'HQ Server Alpha',
     type: 'HQ Server',
-    hardware: 'Dell PowerEdge R740',
+    description: 'Primary HQ Server',
+    ip: '192.168.1.100',
+    version: '1.0.0',
+    hardware: 'Intel Xeon E5-2680, 64GB RAM',
     created_at: randomPastDate(100),
   },
   {
     id: '2',
-    name: 'Server Node B',
-    type: 'HQ Server',
-    hardware: 'HP ProLiant DL380',
+    name: 'Tactical Computer Beta',
+    type: 'Tactical Computer',
+    description: 'Field Tactical Computer',
+    ip: '192.168.1.101',
+    version: '1.0.0',
+    hardware: 'Intel i7-1185G7, 32GB RAM',
     created_at: randomPastDate(90),
   },
   {
     id: '3',
-    name: 'Tactical Computer Alpha',
-    type: 'Tactical Computer',
-    hardware: 'Panasonic Toughbook CF-31',
+    name: 'Client Station Gamma',
+    type: 'Client',
+    description: 'Command Center Client Station',
+    ip: '192.168.1.102',
+    version: '1.0.0',
+    hardware: 'Intel i5-11400, 16GB RAM',
     created_at: randomPastDate(80),
-  },
-  {
-    id: '4',
-    name: 'Client Station 1',
-    type: 'Client',
-    hardware: 'Dell Precision 7560',
-    created_at: randomPastDate(70),
-  },
-  {
-    id: '5',
-    name: 'Client Station 2',
-    type: 'Client',
-    hardware: 'HP ZBook Fury 15',
-    created_at: randomPastDate(60),
-  },
+  }
 ];
 
 // Mock Projects
@@ -95,7 +90,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '1',
     platform_id: '1',
-    component_type: 'product',
+    component_type: 'HQ Server',
     version_number: '1.0.0',
     status: 'deployed',
     deployment_date: randomPastDate(5),
@@ -104,7 +99,7 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '2',
     platform_id: '2',
-    component_type: 'app',
+    component_type: 'Client',
     version_number: '1.1.0',
     status: 'testing',
     deployment_date: randomPastDate(3),
@@ -113,30 +108,12 @@ export const mockComponentVersions: ComponentVersion[] = [
   {
     id: '3',
     platform_id: '3',
-    component_type: 'framework',
+    component_type: 'Tactical Computer',
     version_number: '2.0.0',
     status: 'rollback_needed',
     deployment_date: randomPastDate(2),
     known_issues: ['Critical authentication bug', 'Data sync issues'],
-  },
-  {
-    id: '4',
-    platform_id: '4',
-    component_type: 'radio',
-    version_number: '1.5.0',
-    status: 'deprecated',
-    deployment_date: randomPastDate(30),
-    known_issues: ['Deprecated API endpoints'],
-  },
-  {
-    id: '5',
-    platform_id: '5',
-    component_type: 'map',
-    version_number: '3.0.0',
-    status: 'deployed',
-    deployment_date: randomPastDate(1),
-    known_issues: [],
-  },
+  }
 ];
 
 // Mock Application Versions
