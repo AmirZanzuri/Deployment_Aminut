@@ -38,6 +38,7 @@ export interface Product {
 
 export interface ApplicationVersion {
   id: string;
+  version_number: string;
   ecix_version: string;
   core_version: string;
   tiger_x_version: string;

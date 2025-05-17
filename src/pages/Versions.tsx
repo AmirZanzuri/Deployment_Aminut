@@ -11,6 +11,7 @@ import { mockPlatforms } from '../services/mockData';
 const mockVersions: ApplicationVersion[] = [
   {
     id: '1',
+    version_number: '1.0.0',
     ecix_version: '2.1.0',
     core_version: '3.0.0',
     tiger_x_version: '1.5.0',
@@ -29,6 +30,7 @@ const Versions: React.FC = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const [showPlatformDetailsDialog, setShowPlatformDetailsDialog] = useState(false);
   const [newVersion, setNewVersion] = useState({
+    version_number: '',
     ecix_version: '',
     core_version: '',
     tiger_x_version: '',
@@ -54,6 +56,7 @@ const Versions: React.FC = () => {
     setVersions([...versions, versionToAdd]);
     setShowNewVersionDialog(false);
     setNewVersion({
+      version_number: '',
       ecix_version: '',
       core_version: '',
       tiger_x_version: '',
@@ -62,6 +65,10 @@ const Versions: React.FC = () => {
   };
 
   const columns = [
+    {
+      header: 'Version Number',
+      accessor: 'version_number',
+    },
     {
       header: 'E-CIX Version',
       accessor: 'ecix_version',
@@ -174,6 +181,20 @@ const Versions: React.FC = () => {
       >
         <div className="space-y-4">
           <div>
+            <label htmlFor="version_number" className="block text-sm font-medium text-gray-700">
+              Version Number
+            </label>
+            <input
+              type="text"
+              id="version_number"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newVersion.version_number}
+              onChange={(e) => setNewVersion({ ...newVersion, version_number: e.target.value })}
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
             <label htmlFor="ecix_version" className="block text-sm font-medium text-gray-700">
               E-CIX Version
             </label>
@@ -242,6 +263,10 @@ const Versions: React.FC = () => {
           {selectedVersion && (
             <>
               <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-500">Version Number</h3>
+                  <p className="mt-1 text-lg font-semibold">{selectedVersion.version_number}</p>
+                </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="text-sm font-medium text-gray-500">E-CIX Version</h3>
                   <p className="mt-1 text-lg font-semibold">{selectedVersion.ecix_version}</p>
