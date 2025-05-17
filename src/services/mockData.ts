@@ -263,6 +263,13 @@ export const mockPlatforms: Platform[] = [
   },
 ];
 
-export { mockPlatforms, mockProjects }
-
-export { mockComponentVersions, mockApplicationVersions }
+export { 
+  mockPlatforms, 
+  mockProjects, 
+  mockComponentVersions, 
+  mockApplicationVersions,
+  mockElynxVersions,
+  mockGrxVersions,
+  mockSmartTmrVersions,
+  mockComponents
+};
