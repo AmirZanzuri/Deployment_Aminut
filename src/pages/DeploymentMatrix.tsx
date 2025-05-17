@@ -51,6 +51,11 @@ const DeploymentMatrix: React.FC = () => {
     return version ? version.version_number : 'No Version';
   };
 
+  // Get components for a specific type
+  const getComponentsForType = (type: string): ComponentVersion[] => {
+    return componentVersions.filter(component => component.component_type === type);
+  };
+
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
