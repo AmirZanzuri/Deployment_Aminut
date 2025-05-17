@@ -14,6 +14,7 @@ export const mockProjects: Project[] = [
     name: 'FDC',
     description: 'Fire Direction Center System',
     status: 'active',
+    version: '2.1.0',
     created_at: randomPastDate(300),
   },
   {
@@ -21,6 +22,7 @@ export const mockProjects: Project[] = [
     name: 'ICCS-X',
     description: 'Integrated Command and Control System X',
     status: 'active',
+    version: '1.5.0',
     created_at: randomPastDate(200),
   },
   {
@@ -28,6 +30,7 @@ export const mockProjects: Project[] = [
     name: 'DITA',
     description: 'Digital Training Assistant',
     status: 'active',
+    version: '3.0.0',
     created_at: randomPastDate(100),
   },
   {
@@ -35,6 +38,7 @@ export const mockProjects: Project[] = [
     name: 'NORA',
     description: 'Network Operations and Resource Allocation',
     status: 'active',
+    version: '1.2.3',
     created_at: randomPastDate(150),
   },
   {
@@ -42,6 +46,7 @@ export const mockProjects: Project[] = [
     name: 'PULS',
     description: 'Platform Unified Logistics System',
     status: 'active',
+    version: '2.0.1',
     created_at: randomPastDate(90),
   },
 ];

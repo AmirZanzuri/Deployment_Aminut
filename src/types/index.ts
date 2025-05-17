@@ -3,6 +3,7 @@ export interface Project {
   name: string;
   description: string;
   status: 'active' | 'pending' | 'completed';
+  version: string;
   created_at: string;
 }
 
