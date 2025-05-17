@@ -15,6 +15,16 @@ export interface Platform {
   type: 'HQ Server' | 'Mounted Station';
   project_id: string;
   created_at: string;
+  component_nodes?: ComponentNode[];
+}
+
+export interface ComponentNode {
+  id: string;
+  platform_id: string;
+  component_id: string;
+  component_type: Component['type'];
+  status: 'active' | 'inactive';
+  created_at: string;
 }
 
 export interface ComponentVersion {
@@ -83,4 +93,5 @@ export interface Component {
   ip: string;
   version: string;
   created_at: string;
+  node_id?: string;
 }

@@ -5,7 +5,7 @@ import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import { Filter, Search, Plus, Edit2, Trash2, Server, X, Grid } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
-import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
+import { Platform, ComponentVersion, Project, ApplicationVersion, Component } from '../types';
 
 const DeploymentMatrix: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,9 +22,9 @@ const DeploymentMatrix: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
-  const [selectedComponents, setSelectedComponents] = useState<Record<string, string[]>>({});
   const [showComponentsDialog, setShowComponentsDialog] = useState(false);
   const [currentPlatformId, setCurrentPlatformId] = useState<string | null>(null);
+  const [selectedComponents, setSelectedComponents] = useState<Record<string, Component[]>>({});
   const [newPlatform, setNewPlatform] = useState({
     name: '',
     urn: '',
@@ -189,31 +189,32 @@ const DeploymentMatrix: React.FC = () => {
     return groups;
   };
 
-  // Group components by type
-  const getComponentsForType = (type: string) => {
-    return mockComponentVersions.filter(c => c.component_type === type);
-  };
-
-  const handleComponentSelect = (componentId: string) => {
+  // Handle component selection
+  const handleComponentSelect = (component: Component) => {
     if (!currentPlatformId) return;
     
     setSelectedComponents(prev => {
-      const current = prev[currentPlatformId] || [];
-      const updated = current.includes(componentId)
-        ? current.filter(id => id !== componentId)
-        : [...current, componentId];
+      const currentComponents = prev[currentPlatformId] || [];
+      const isSelected = currentComponents.some(c => c.id === component.id);
       
-      return {
-        ...prev,
-        [currentPlatformId]: updated
-      };
+      if (isSelected) {
+        return {
+          ...prev,
+          [currentPlatformId]: currentComponents.filter(c => c.id !== component.id)
+        };
+      } else {
+        return {
+          ...prev,
+          [currentPlatformId]: [...currentComponents, component]
+        };
+      }
     });
   };
 
   const isComponentSelected = (componentId: string) => {
-    return currentPlatformId 
-      ? (selectedComponents[currentPlatformId] || []).includes(componentId)
-      : false;
+    if (!currentPlatformId) return false;
+    const platformComponents = selectedComponents[currentPlatformId] || [];
+    return platformComponents.some(c => c.id === componentId);
   };
 
   if (isLoading) {
@@ -703,7 +704,7 @@ const DeploymentMatrix: React.FC = () => {
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 hover:border-blue-300'}
                     `}
-                    onClick={() => handleComponentSelect(component.id)}
+                    onClick={() => handleComponentSelect(component)}
                   >
                     <div className="flex justify-between items-start">
                       <div>
