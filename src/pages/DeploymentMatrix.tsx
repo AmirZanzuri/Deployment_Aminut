@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import { Filter, Search } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
-import { Filter, DownloadCloud, Search, Layers } from 'lucide-react';
-
-type GroupingOption = 'project' | 'type' | 'version';
 
 const DeploymentMatrix: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +16,7 @@ const DeploymentMatrix: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [componentTypes, setComponentTypes] = useState<string[]>([]);
   const [selectedComponentType, setSelectedComponentType] = useState<string>('all');
-  const [grouping, setGrouping] = useState<GroupingOption>('project');
+  const [grouping, setGrouping] = useState<'project' | 'type' | 'version'>('project');
 
   useEffect(() => {
     // Simulate API call
@@ -74,24 +72,20 @@ const DeploymentMatrix: React.FC = () => {
   const groupedPlatforms = () => {
     const groups: Record<string, Platform[]> = {};
 
-    // Create initial groups based on grouping type
+    // Initialize groups based on grouping type
     if (grouping === 'project') {
-      // Initialize groups for all projects
       projects.forEach(project => {
         groups[project.name] = [];
       });
     } else if (grouping === 'type') {
-      // Initialize groups for platform types
-      const types = ['HQ Server', 'Mounted Station'];
-      types.forEach(type => {
+      ['HQ Server', 'Mounted Station'].forEach(type => {
         groups[type] = [];
       });
     } else if (grouping === 'version') {
-      // Initialize groups for all versions
       applicationVersions.forEach(version => {
         groups[`Version ${version.version_number}`] = [];
       });
-      groups['Unknown Version'] = []; // Add unknown version group
+      groups['Unknown Version'] = [];
     }
 
     // Distribute platforms to their respective groups
@@ -111,10 +105,9 @@ const DeploymentMatrix: React.FC = () => {
           break;
       }
 
-      if (!groups[groupKey]) {
-        groups[groupKey] = [];
+      if (groups[groupKey]) {
+        groups[groupKey].push(platform);
       }
-      groups[groupKey].push(platform);
     });
 
     // Remove empty groups
@@ -132,11 +125,7 @@ const DeploymentMatrix: React.FC = () => {
       <div className="animate-pulse space-y-6">
         <div className="h-12 bg-gray-200 rounded"></div>
         <div className="h-20 bg-gray-200 rounded"></div>
-        <div className="grid grid-cols-1 gap-6">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
-          ))}
-        </div>
+        <div className="h-96 bg-gray-200 rounded-lg"></div>
       </div>
     );
   }
@@ -145,15 +134,8 @@ const DeploymentMatrix: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
-        <Button 
-          variant="outline" 
-          size="sm"
-          icon={<DownloadCloud size={16} />}
-        >
-          Export Data
-        </Button>
       </div>
 
       {/* Filters */}
@@ -167,7 +149,7 @@ const DeploymentMatrix: React.FC = () => {
               id="grouping"
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={grouping}
-              onChange={(e) => setGrouping(e.target.value as GroupingOption)}
+              onChange={(e) => setGrouping(e.target.value as 'project' | 'type' | 'version')}
             >
               <option value="project">By Project</option>
               <option value="type">By Type</option>
@@ -225,7 +207,7 @@ const DeploymentMatrix: React.FC = () => {
                 type="text"
                 id="search"
                 className="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                placeholder="Search nodes..."
+                placeholder="Search platforms..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -235,120 +217,83 @@ const DeploymentMatrix: React.FC = () => {
       </Card>
 
       {/* Matrix Display */}
-      <div className="space-y-6">
-        {Object.keys(groups).length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow">
-            <Filter className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-lg font-medium text-gray-900">No nodes match your filters</h3>
-            <p className="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
-            <div className="mt-6">
-              <Button 
-                onClick={() => {
-                  setSelectedProject('all');
-                  setSelectedComponentType('all');
-                  setSearchQuery('');
-                }}
-              >
-                Reset Filters
-              </Button>
-            </div>
-          </div>
-        ) : (
-          Object.entries(groups).map(([group, platforms]) => (
-            <Card
-              key={group}
-              title={group}
-              subtitle={`${platforms.length} ${platforms.length === 1 ? 'node' : 'nodes'}`}
-              className="transition-all duration-300 hover:shadow-md"
+      {Object.keys(groups).length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-lg shadow">
+          <Filter className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-2 text-lg font-medium text-gray-900">No platforms match your filters</h3>
+          <p className="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
+          <div className="mt-6">
+            <Button 
+              onClick={() => {
+                setSelectedProject('all');
+                setSelectedComponentType('all');
+                setSearchQuery('');
+              }}
             >
-              <div className="space-y-4">
-                {platforms.map((platform) => {
-                  const components = getComponentsForPlatform(platform.id);
-                  const projectName = getProjectName(platform.project_id);
-                  
-                  return (
-                    <div key={platform.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900">{platform.name}</h4>
-                          <p className="text-sm text-gray-500">
-                            URN: {platform.urn} | Project: {projectName}
-                          </p>
+              Reset Filters
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Group
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Platform
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    URN
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Components
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {Object.entries(groups).map(([groupName, platforms]) => (
+                  platforms.map((platform, platformIndex) => (
+                    <tr key={platform.id} className={platformIndex === 0 ? 'bg-gray-50' : ''}>
+                      {platformIndex === 0 && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" rowSpan={platforms.length}>
+                          {groupName}
+                        </td>
+                      )}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {platform.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
+                        {platform.urn}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {platform.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex flex-wrap gap-2">
+                          {getComponentsForPlatform(platform.id).map((component) => (
+                            <Badge
+                              key={component.id}
+                              status={getStatusColor(component.status)}
+                              label={`${component.component_type} ${component.version_number}`}
+                            />
+                          ))}
                         </div>
-                        <span className="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
-                          {platform.type}
-                        </span>
-                      </div>
-                      
-                      <div className="mt-4">
-                        <h5 className="text-sm font-medium text-gray-700 mb-2">Components</h5>
-                        {components.length === 0 ? (
-                          <p className="text-sm text-gray-500 py-2">No components match the current filters</p>
-                        ) : (
-                          <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                              <thead className="bg-gray-50">
-                                <tr>
-                                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Type
-                                  </th>
-                                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Version
-                                  </th>
-                                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                  </th>
-                                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Deployed
-                                  </th>
-                                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Issues
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className="bg-white divide-y divide-gray-200">
-                                {components.map((component) => (
-                                  <tr key={component.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                      {component.component_type.charAt(0).toUpperCase() + component.component_type.slice(1)}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      {component.version_number}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                      <Badge
-                                        status={getStatusColor(component.status)}
-                                        label={component.status}
-                                        animate={true}
-                                      />
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      {new Date(component.deployment_date).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                      {component.known_issues && component.known_issues.length > 0 ? (
-                                        <span className="text-red-600 font-medium">
-                                          {component.known_issues.length} {component.known_issues.length === 1 ? 'issue' : 'issues'}
-                                        </span>
-                                      ) : (
-                                        <span className="text-green-600">None</span>
-                                      )}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          ))
-        )}
-      </div>
+                      </td>
+                    </tr>
+                  ))
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
