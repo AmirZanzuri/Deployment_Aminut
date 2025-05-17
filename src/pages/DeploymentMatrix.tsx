@@ -3,7 +3,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
-import { Filter, Search, Plus, Edit2, Trash2, Server, LayoutGrid, Table as TableIcon } from 'lucide-react';
+import { Filter, Search, Plus, Edit2, Trash2, Server, X } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 
@@ -17,7 +17,7 @@ const DeploymentMatrix: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [componentTypes, setComponentTypes] = useState<string[]>([]);
   const [selectedComponentType, setSelectedComponentType] = useState<string>('all');
-  const [grouping, setGrouping] = useState<'project' | 'type' | 'version' | 'none'>('none');
+  const [grouping, setGrouping] = useState<'project' | 'type' | 'version'>('project');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -154,49 +154,27 @@ const DeploymentMatrix: React.FC = () => {
 
   // Group platforms based on selected grouping option
   const groupedPlatforms = () => {
-    if (grouping === 'none') {
-      return { 'All Platforms': filteredPlatforms };
-    }
-
     const groups: Record<string, Platform[]> = {};
 
-    // Initialize groups based on grouping type
     if (grouping === 'project') {
       projects.forEach(project => {
-        groups[project.name] = [];
+        groups[project.name] = filteredPlatforms.filter(p => p.project_id === project.id);
       });
     } else if (grouping === 'type') {
       ['HQ Server', 'Mounted Station'].forEach(type => {
-        groups[type] = [];
+        groups[type] = filteredPlatforms.filter(p => p.type === type);
       });
     } else if (grouping === 'version') {
       applicationVersions.forEach(version => {
-        groups[`Version ${version.version_number}`] = [];
+        groups[`Version ${version.version_number}`] = filteredPlatforms.filter(
+          p => p.application_version_id === version.id
+        );
       });
-      groups['Unknown Version'] = [];
+      const noVersion = filteredPlatforms.filter(p => !p.application_version_id);
+      if (noVersion.length > 0) {
+        groups['No Version'] = noVersion;
+      }
     }
-
-    // Distribute platforms to their respective groups
-    filteredPlatforms.forEach(platform => {
-      let groupKey = '';
-      
-      switch (grouping) {
-        case 'project':
-          groupKey = getProjectName(platform.project_id);
-          break;
-        case 'type':
-          groupKey = platform.type;
-          break;
-        case 'version':
-          const version = applicationVersions.find(v => v.id === platform.application_version_id);
-          groupKey = version ? `Version ${version.version_number}` : 'Unknown Version';
-          break;
-      }
-
-      if (groups[groupKey]) {
-        groups[groupKey].push(platform);
-      }
-    });
 
     // Remove empty groups
     Object.keys(groups).forEach(key => {
@@ -236,41 +214,28 @@ const DeploymentMatrix: React.FC = () => {
       <Card>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <label htmlFor="grouping" className="block text-sm font-medium text-gray-700">
-                View Mode
-              </label>
-              <div className="flex rounded-md shadow-sm">
-                <Button
-                  variant={grouping === 'none' ? 'primary' : 'outline'}
-                  size="sm"
-                  icon={<TableIcon size={16} />}
-                  onClick={() => setGrouping('none')}
-                >
-                  List
-                </Button>
-                <Button
-                  variant={grouping !== 'none' ? 'primary' : 'outline'}
-                  size="sm"
-                  icon={<LayoutGrid size={16} />}
-                  onClick={() => setGrouping('project')}
-                >
-                  Grouped
-                </Button>
-              </div>
-            </div>
-            {grouping !== 'none' && (
+            <label htmlFor="grouping" className="block text-sm font-medium text-gray-700 mb-1">
+              Group By
+            </label>
+            <div className="flex items-center gap-2">
               <select
                 id="grouping"
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={grouping}
-                onChange={(e) => setGrouping(e.target.value as 'project' | 'type' | 'version' | 'none')}
+                onChange={(e) => setGrouping(e.target.value as 'project' | 'type' | 'version')}
               >
                 <option value="project">By Project</option>
                 <option value="type">By Type</option>
                 <option value="version">By Version</option>
               </select>
-            )}
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={<X size={16} />}
+                onClick={() => setGrouping('project')}
+                className="flex-shrink-0"
+              />
+            </div>
           </div>
 
           <div className="flex-1">
@@ -355,11 +320,9 @@ const DeploymentMatrix: React.FC = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  {grouping !== 'none' && (
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Group
-                    </th>
-                  )}
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Group
+                  </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Platform
                   </th>
@@ -389,11 +352,11 @@ const DeploymentMatrix: React.FC = () => {
                     <tr 
                       key={platform.id} 
                       className={`
-                        ${platformIndex === 0 && grouping !== 'none' ? 'bg-gray-50' : ''}
+                        ${platformIndex === 0 ? 'bg-gray-50' : ''}
                         ${duplicateUrns.includes(platform.urn) ? 'bg-red-50' : ''}
                       `}
                     >
-                      {grouping !== 'none' && platformIndex === 0 && (
+                      {platformIndex === 0 && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" rowSpan={platforms.length}>
                           {groupName}
                         </td>
