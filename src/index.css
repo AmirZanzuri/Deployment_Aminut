@@ -13,47 +13,49 @@ body {
   color: var(--neon-blue);
 }
 
-.futuristic-border {
-  @apply relative rounded-lg border border-[var(--neon-blue)] bg-[var(--dark-blue)];
-}
+@layer components {
+  .futuristic-border {
+    @apply relative rounded-lg border border-[var(--neon-blue)] bg-[var(--dark-blue)];
+  }
 
-.futuristic-border::before {
-  content: '';
-  @apply absolute -inset-[1px] rounded-lg border-[1px] border-[var(--neon-blue)] opacity-50;
-  filter: blur(4px);
-}
+  .futuristic-border::before {
+    content: '';
+    @apply absolute -inset-[1px] rounded-lg border-[1px] border-[var(--neon-blue)] opacity-50;
+    filter: blur(4px);
+  }
 
-.futuristic-card {
-  @apply futuristic-border shadow-neon-dim;
-}
+  .futuristic-card {
+    @apply futuristic-border shadow-neon-dim;
+  }
 
-.futuristic-grid {
-  background-image: linear-gradient(var(--neon-blue) 1px, transparent 1px),
-    linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
-  background-size: 20px 20px;
-  background-position: center center;
-  opacity: 0.1;
-}
+  .futuristic-grid {
+    background-image: linear-gradient(var(--neon-blue) 1px, transparent 1px),
+      linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: center center;
+    opacity: 0.1;
+  }
 
-.status-bar {
-  @apply relative h-2 rounded-full bg-[var(--dark-blue)] overflow-hidden;
-}
+  .status-bar {
+    @apply relative h-2 rounded-full bg-[var(--dark-blue)] overflow-hidden;
+  }
 
-.status-bar-fill {
-  @apply absolute inset-y-0 left-0 bg-[var(--neon-blue)] transition-all duration-500;
-}
+  .status-bar-fill {
+    @apply absolute inset-y-0 left-0 bg-[var(--neon-blue)] transition-all duration-500;
+  }
 
-.status-bar-glow {
-  @apply absolute inset-0;
-  box-shadow: 0 0 10px var(--neon-blue);
-}
+  .status-bar-glow {
+    @apply absolute inset-0;
+    box-shadow: 0 0 10px var(--neon-blue);
+  }
 
-.neon-text {
-  @apply text-[var(--neon-blue)];
-  text-shadow: 0 0 10px var(--neon-blue);
-}
+  .neon-text {
+    @apply text-[var(--neon-blue)];
+    text-shadow: 0 0 10px var(--neon-blue);
+  }
 
-.neon-border {
-  @apply border-[var(--neon-blue)];
-  box-shadow: 0 0 10px var(--neon-blue);
+  .neon-border {
+    @apply border-[var(--neon-blue)];
+    box-shadow: 0 0 10px var(--neon-blue);
+  }
 }
