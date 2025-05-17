@@ -1,24 +1,37 @@
-Here's the fixed version with all closing brackets added:
+import React from 'react';
+import { Button } from '../components/ui/Button';
+import { Dialog } from '../components/ui/Dialog';
+import { DialogFooter } from '../components/ui/Dialog';
 
-```javascript
-                id="edit-component"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                value={selectedPlatform.component_id}
-                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, component_id: e.target.value })}
-              >
-                <option value="">Select Component</option>
-                {getAvailableComponents().map((component) => (
-                  <option key={component.id} value={component.id}>
-                    {component.name} - {component.hardware}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
-      </Dialog>
+const DeploymentMatrix = () => {
+  const [selectedPlatform, setSelectedPlatform] = React.useState({ component_id: '' });
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [showComponentsDialog, setShowComponentsDialog] = React.useState(false);
+  
+  // Mock data for demonstration
+  const availableComponents = [
+    { id: '1', name: 'Component 1', hardware: 'Hardware A' },
+    { id: '2', name: 'Component 2', hardware: 'Hardware B' }
+  ];
 
-      {/* Delete Node Dialog */}
+  const getAvailableComponents = () => {
+    return availableComponents;
+  };
+
+  const handleDeletePlatform = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const isComponentSelected = (componentId: string) => {
+    return selectedPlatform.component_id === componentId;
+  };
+
+  const handleComponentSelect = (component: { id: string }) => {
+    setSelectedPlatform({ ...selectedPlatform, component_id: component.id });
+  };
+
+  return (
+    <div>
       <Dialog
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -37,7 +50,6 @@ Here's the fixed version with all closing brackets added:
         </p>
       </Dialog>
 
-      {/* Components Dialog */}
       <Dialog
         isOpen={showComponentsDialog}
         onClose={() => setShowComponentsDialog(false)}
@@ -75,4 +87,3 @@ Here's the fixed version with all closing brackets added:
 };
 
 export default DeploymentMatrix;
-```
