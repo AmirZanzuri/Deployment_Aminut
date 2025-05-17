@@ -33,7 +33,18 @@ const DeploymentMatrix: React.FC = () => {
     project_id: '',
     application_version_id: '',
     hardware: '',
+    component_id: '',
   });
+
+  // Get available components by type
+  const getAvailableComponents = (type: string | undefined = undefined) => {
+    return mockComponents.filter(c => !type || c.type === type);
+  };
+
+  // Get component details by id
+  const getComponentDetails = (id: string) => {
+    return mockComponents.find(c => c.id === id);
+  };
 
   // Get hardware components by type
   const getHardwareComponents = (type: string | undefined = undefined) => {
@@ -118,6 +129,7 @@ const DeploymentMatrix: React.FC = () => {
       project_id: newPlatform.project_id,
       application_version_id: '',
       hardware: '',
+      component_id: '',
     });
   };
 
@@ -594,6 +606,25 @@ const DeploymentMatrix: React.FC = () => {
               ))}
             </select>
           </div>
+
+          <div>
+            <label htmlFor="component" className="block text-sm font-medium text-gray-700">
+              Component
+            </label>
+            <select
+              id="component"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.component_id || ''}
+              onChange={(e) => setNewPlatform({ ...newPlatform, component_id: e.target.value })}
+            >
+              <option value="">Select Component</option>
+              {getAvailableComponents().map((component) => (
+                <option key={component.id} value={component.id}>
+                  {component.name} - {component.hardware}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </Dialog>
 
@@ -720,6 +751,7 @@ const DeploymentMatrix: React.FC = () => {
         onClose={() => setDeleteDialogOpen(false)}
         title="Delete Node"
         footer={
+          
           <DialogFooter
             cancelText="Cancel"
             confirmText="Delete Node"
