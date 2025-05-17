@@ -21,9 +21,9 @@ export const mockComponents: Component[] = [
   },
   {
     id: '2',
-    name: 'Tactical Computer Beta',
-    type: 'Tactical Computer',
-    description: 'Field Tactical Computer',
+    name: 'Smart TMR Unit 1',
+    type: 'Smart TMR',
+    description: 'Field Smart TMR Unit',
     ip: '192.168.1.101',
     version: '1.0.0',
     hardware: 'Intel i7-1185G7, 32GB RAM',
@@ -31,13 +31,23 @@ export const mockComponents: Component[] = [
   },
   {
     id: '3',
-    name: 'Client Station Gamma',
-    type: 'Client',
-    description: 'Command Center Client Station',
+    name: 'E-Lynks Radio Alpha',
+    type: 'E-Lynks Radio',
+    description: 'Primary Communication Radio',
     ip: '192.168.1.102',
     version: '1.0.0',
-    hardware: 'Intel i5-11400, 16GB RAM',
+    hardware: 'Custom Radio Hardware v2',
     created_at: randomPastDate(80),
+  },
+  {
+    id: '4',
+    name: 'GRX System Beta',
+    type: 'GRX',
+    description: 'GRX Processing Unit',
+    ip: '192.168.1.103',
+    version: '1.0.0',
+    hardware: 'Custom GRX Hardware v3',
+    created_at: randomPastDate(70),
   }
 ];
 
