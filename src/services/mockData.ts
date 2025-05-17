@@ -180,7 +180,7 @@ export const mockSmartTmrVersions: SmartTmrVersion[] = [
 export const mockPlatforms: Platform[] = [
   {
     id: '1',
-    name: 'Web Portal',
+    name: 'Node 1',
     urn: '1234567',
     application_version_id: '1',
     type: 'HQ Server',
@@ -189,7 +189,7 @@ export const mockPlatforms: Platform[] = [
   },
   {
     id: '2',
-    name: 'Mobile Client',
+    name: 'Node 2',
     urn: '2345678',
     application_version_id: '1',
     type: 'Mounted Station',
@@ -198,7 +198,7 @@ export const mockPlatforms: Platform[] = [
   },
   {
     id: '3',
-    name: 'Desktop Application',
+    name: 'Node 3',
     urn: '3456789',
     application_version_id: '2',
     type: 'HQ Server',
@@ -207,7 +207,7 @@ export const mockPlatforms: Platform[] = [
   },
   {
     id: '4',
-    name: 'Backend Infrastructure',
+    name: 'Node 4',
     urn: '4567890',
     application_version_id: '2',
     type: 'Mounted Station',
@@ -216,7 +216,7 @@ export const mockPlatforms: Platform[] = [
   },
   {
     id: '5',
-    name: 'Secure Messaging',
+    name: 'Node 5',
     urn: '5678901',
     application_version_id: '1',
     type: 'HQ Server',
@@ -225,7 +225,7 @@ export const mockPlatforms: Platform[] = [
   },
   {
     id: '6',
-    name: 'Field Terminal',
+    name: 'Node 6',
     urn: '6789012',
     application_version_id: '1',
     type: 'Mounted Station',
