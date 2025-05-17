@@ -6,8 +6,10 @@ export default {
   ],
   theme: {
     extend: {
-      borderColor: {
+      colors: {
         'neon-blue': 'var(--neon-blue)',
+        'dark-blue': 'var(--dark-blue)',
+        'darker-blue': 'var(--darker-blue)',
       },
       opacity: {
         '10': '0.1',
@@ -19,11 +21,6 @@ export default {
         '70': '0.7',
         '80': '0.8',
         '90': '0.9',
-      },
-      colors: {
-        'neon-blue': 'var(--neon-blue)',
-        'dark-blue': 'var(--dark-blue)',
-        'darker-blue': 'var(--darker-blue)',
       },
     },
   },
