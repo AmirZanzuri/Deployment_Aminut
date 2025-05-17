@@ -4,7 +4,7 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import { Filter, Search, Plus, Edit2, Trash2, Server, X, Grid } from 'lucide-react';
-import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
+import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions, mockComponents } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion, Component } from '../types';
 
 const DeploymentMatrix: React.FC = () => {
@@ -72,15 +72,8 @@ const DeploymentMatrix: React.FC = () => {
   };
 
   useEffect(() => {
-    // Simulate API call to fetch components
-    // In a real app, this would be an API call to your backend
-    fetch('/api/components')
-      .then(response => response.json())
-      .then(data => setAvailableComponents(data))
-      .catch(error => {
-        console.error('Error fetching components:', error);
-        setAvailableComponents([]);
-      });
+    // Use mock data directly instead of fetching
+    setAvailableComponents(mockComponents);
 
     // Simulate API call for other data
     setTimeout(() => {
@@ -752,7 +745,7 @@ const DeploymentMatrix: React.FC = () => {
       {/* Components Selection Dialog */}
       <Dialog
         isOpen={showComponentsDialog}
-        onClose={() => setShowComponentsDialog(false)}
+        onClose={()=> setShowComponentsDialog(false)}
         title="Select Components"
         size="xl"
         footer={
