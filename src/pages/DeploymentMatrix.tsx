@@ -3,10 +3,10 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
-import Table from '../components/ui/Table';
-import { Filter, Search, Plus, Edit2, Trash2, Server, X } from 'lucide-react';
+import { Filter, Search, Plus, Edit2, Trash2, Server, X, Link, ExternalLink } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions, mockComponents } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion, Component } from '../types';
+import { Link as RouterLink } from 'react-router-dom';
 
 const DeploymentMatrix: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -75,6 +75,11 @@ const DeploymentMatrix: React.FC = () => {
     return version ? version.version_number : 'No Version';
   };
 
+  // Get component details
+  const getComponentDetails = (componentId: string | undefined): Component | undefined => {
+    return availableComponents.find(c => c.id === componentId);
+  };
+
   const handleCreatePlatform = () => {
     // Generate a new ID and created_at date
     const newId = (Math.max(...platforms.map(p => parseInt(p.id))) + 1).toString();
@@ -129,6 +134,11 @@ const DeploymentMatrix: React.FC = () => {
     if (selectedPlatform) {
       setSelectedPlatform({
         ...selectedPlatform,
+        component_id: component.id
+      });
+    } else {
+      setNewPlatform({
+        ...newPlatform,
         component_id: component.id
       });
     }
@@ -356,6 +366,9 @@ const DeploymentMatrix: React.FC = () => {
                     Version
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Hardware
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Components
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -365,69 +378,85 @@ const DeploymentMatrix: React.FC = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {Object.entries(groups).map(([groupName, platforms]) => (
-                  platforms.map((platform, platformIndex) => (
-                    <tr 
-                      key={platform.id} 
-                      className={`
-                        ${platformIndex === 0 ? 'bg-gray-50' : ''}
-                        ${duplicateUrns.includes(platform.urn) ? 'bg-red-50' : ''}
-                      `}
-                    >
-                      {platformIndex === 0 && (
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" rowSpan={platforms.length}>
-                          {groupName}
+                  platforms.map((platform, platformIndex) => {
+                    const component = getComponentDetails(platform.component_id);
+                    return (
+                      <tr 
+                        key={platform.id} 
+                        className={`
+                          ${platformIndex === 0 ? 'bg-gray-50' : ''}
+                          ${duplicateUrns.includes(platform.urn) ? 'bg-red-50' : ''}
+                        `}
+                      >
+                        {platformIndex === 0 && (
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" rowSpan={platforms.length}>
+                            {groupName}
+                          </td>
+                        )}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {platform.name}
                         </td>
-                      )}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {platform.name}
-                      </td>
-                      <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${duplicateUrns.includes(platform.urn) ? 'text-red-600 font-bold' : 'text-gray-500'}`}>
-                        {platform.urn}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {platform.type}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {getProjectName(platform.project_id)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {getVersionNumber(platform.application_version_id)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex flex-wrap gap-2">
-                          {getComponentsForPlatform(platform.id).map((component) => (
-                            <Badge
-                              key={component.id}
-                              status={getStatusColor(component.status)}
-                              label={`${component.component_type} ${component.version_number}`}
+                        <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${duplicateUrns.includes(platform.urn) ? 'text-red-600 font-bold' : 'text-gray-500'}`}>
+                          {platform.urn}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {platform.type}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {getProjectName(platform.project_id)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {getVersionNumber(platform.application_version_id)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {component ? (
+                            <RouterLink 
+                              to="/components" 
+                              className="flex items-center text-blue-600 hover:text-blue-800"
+                            >
+                              {component.hardware}
+                              <ExternalLink size={14} className="ml-1" />
+                            </RouterLink>
+                          ) : (
+                            <span className="text-gray-400">Not assigned</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex flex-wrap gap-2">
+                            {getComponentsForPlatform(platform.id).map((component) => (
+                              <Badge
+                                key={component.id}
+                                status={getStatusColor(component.status)}
+                                label={`${component.component_type} ${component.version_number}`}
+                              />
+                            ))}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              icon={<Edit2 size={16} />}
+                              onClick={() => {
+                                setSelectedPlatform(platform);
+                                setEditDialogOpen(true);
+                              }}
                             />
-                          ))}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            icon={<Edit2 size={16} />}
-                            onClick={() => {
-                              setSelectedPlatform(platform);
-                              setEditDialogOpen(true);
-                            }}
-                          />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            icon={<Trash2 size={16} />}
-                            onClick={() => {
-                              setSelectedPlatform(platform);
-                              setDeleteDialogOpen(true);
-                            }}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              icon={<Trash2 size={16} />}
+                              onClick={() => {
+                                setSelectedPlatform(platform);
+                                setDeleteDialogOpen(true);
+                              }}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ))}
               </tbody>
             </table>
@@ -543,6 +572,7 @@ const DeploymentMatrix: React.FC = () => {
                 availableComponents.find(c => c.id === newPlatform.component_id)?.name :
                 'Select Component'
               }
+              <Link size={16} />
             </Button>
           </div>
         </div>
@@ -657,6 +687,7 @@ const DeploymentMatrix: React.FC = () => {
                   availableComponents.find(c => c.id === selectedPlatform.component_id)?.name :
                   'Select Component'
                 }
+                <Link size={16} />
               </Button>
             </div>
           </div>
@@ -714,10 +745,18 @@ const DeploymentMatrix: React.FC = () => {
                 </div>
               </div>
               <Button
-                variant={selectedPlatform?.component_id === component.id ? 'primary' : 'outline'}
+                variant={
+                  (selectedPlatform?.component_id === component.id || 
+                   newPlatform.component_id === component.id) 
+                    ? 'primary' 
+                    : 'outline'
+                }
                 size="sm"
               >
-                {selectedPlatform?.component_id === component.id ? 'Selected' : 'Select'}
+                {(selectedPlatform?.component_id === component.id ||
+                  newPlatform.component_id === component.id)
+                    ? 'Selected' 
+                    : 'Select'}
               </Button>
             </div>
           ))}
