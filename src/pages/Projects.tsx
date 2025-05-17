@@ -6,7 +6,7 @@ import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { mockProjects, mockPlatforms } from '../services/mockData';
 import { Project } from '../types';
-import { Plus, Trash2, Edit2, MoreHorizontal, Package } from 'lucide-react';
+import { Plus, Trash2, Edit2, Package } from 'lucide-react';
 
 const Projects: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +19,7 @@ const Projects: React.FC = () => {
     name: '',
     description: '',
     status: 'pending' as const,
+    version: '1.0.0',
   });
 
   useEffect(() => {
@@ -49,6 +50,7 @@ const Projects: React.FC = () => {
       name: '',
       description: '',
       status: 'pending',
+      version: '1.0.0',
     });
   };
 
@@ -96,6 +98,12 @@ const Projects: React.FC = () => {
       header: 'Name',
       accessor: (project: Project) => (
         <div className="font-medium text-gray-900">{project.name}</div>
+      ),
+    },
+    {
+      header: 'Version',
+      accessor: (project: Project) => (
+        <div className="text-sm font-medium text-gray-600">{project.version}</div>
       ),
     },
     {
@@ -200,6 +208,20 @@ const Projects: React.FC = () => {
           </div>
           
           <div>
+            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
+              Version
+            </label>
+            <input
+              type="text"
+              id="version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newProject.version}
+              onChange={(e) => setNewProject({ ...newProject, version: e.target.value })}
+              placeholder="1.0.0"
+            />
+          </div>
+          
+          <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700">
               Description
             </label>
@@ -256,6 +278,19 @@ const Projects: React.FC = () => {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={currentProject.name}
                 onChange={(e) => setCurrentProject({ ...currentProject, name: e.target.value })}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
+                Version
+              </label>
+              <input
+                type="text"
+                id="edit-version"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={currentProject.version}
+                onChange={(e) => setCurrentProject({ ...currentProject, version: e.target.value })}
               />
             </div>
             
