@@ -134,22 +134,6 @@ const DeploymentMatrix: React.FC = () => {
       accessor: (platform: Platform) => getProjectName(platform.project_id),
     },
     {
-      header: 'Hardware',
-      accessor: (platform: Platform) => {
-        const component = getComponentDetails(platform.component_id);
-        if (!component) return '-';
-        return (
-          <RouterLink
-            to={`/components#${component.id}`}
-            className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-          >
-            <span>{component.hardware}</span>
-            <ExternalLink size={14} />
-          </RouterLink>
-        );
-      },
-    },
-    {
       header: 'Selected Components',
       accessor: (platform: Platform) => {
         const platformComponents = selectedComponents[platform.id] || [];
@@ -367,7 +351,7 @@ const DeploymentMatrix: React.FC = () => {
               <option value="">Select Component</option>
               {availableComponents.map((component) => (
                 <option key={component.id} value={component.id}>
-                  {component.name} - {component.hardware}
+                  {component.name}
                 </option>
               ))}
             </select>
@@ -483,7 +467,7 @@ const DeploymentMatrix: React.FC = () => {
                 <option value="">Select Component</option>
                 {availableComponents.map((component) => (
                   <option key={component.id} value={component.id}>
-                    {component.name} - {component.hardware}
+                    {component.name}
                   </option>
                 ))}
               </select>
@@ -580,7 +564,6 @@ const DeploymentMatrix: React.FC = () => {
                 <div className="mt-2 text-sm text-gray-600">
                   <p>{component.description}</p>
                   <p className="mt-1 font-mono">{component.ip}</p>
-                  <p className="mt-1">Hardware: {component.hardware}</p>
                 </div>
               </div>
             );
