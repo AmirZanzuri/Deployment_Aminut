@@ -7,12 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        'neon-blue': 'var(--neon-blue)',
+        'neon-blue': 'rgb(var(--neon-blue-rgb) / <alpha-value>)',
         'dark-blue': 'var(--dark-blue)',
         'darker-blue': 'var(--darker-blue)',
-      },
-      borderColor: {
-        'neon-blue': 'var(--neon-blue)',
       },
     },
   },
