@@ -1,3 +1,5 @@
+import { Database } from './database.types';
+
 export interface Project {
   id: string;
   name: string;
@@ -21,7 +23,7 @@ export interface Platform {
 export interface ComponentVersion {
   id: string;
   platform_id: string;
-  component_type: 'HQ Server' | 'Client' | 'Tactical Computer';
+  component_type: 'HQ Server' | 'Client' | 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'GRX';
   version_number: string;
   status: 'testing' | 'deployed' | 'rollback_needed' | 'deprecated';
   deployment_date: string;
@@ -79,7 +81,7 @@ export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';
 export interface Component {
   id: string;
   name: string;
-  type: 'HQ Server' | 'Client' | 'Tactical Computer';
+  type: 'HQ Server' | 'Client' | 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'GRX';
   description: string;
   ip: string;
   version: string;
