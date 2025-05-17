@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Server, Captions as Versions, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Server, Cpu, Menu, X, Captions as Versions } from 'lucide-react';
 import Button from '../ui/Button';
 
 const Navbar: React.FC = () => {
@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/matrix', label: 'Deployment Matrix', icon: <Server size={18} /> },
+    { path: '/components', label: 'Components', icon: <Cpu size={18} /> },
     { path: '/versions', label: 'Versions', icon: <Versions size={18} /> },
   ];
 
@@ -38,7 +39,6 @@ const Navbar: React.FC = () => {
     <nav className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Logo and desktop navigation */}
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Server className="block h-8 w-auto text-blue-600" />
@@ -51,7 +51,6 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile menu button */}
           <div className="sm:hidden">
             <Button
               variant="ghost"
@@ -63,7 +62,6 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div className={`sm:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-3 space-y-1">
           {navItems.map((item) => (

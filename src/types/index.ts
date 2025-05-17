@@ -20,7 +20,7 @@ export interface Platform {
 export interface ComponentVersion {
   id: string;
   platform_id: string;
-  component_type: 'product' | 'app' | 'radio' | 'framework' | 'map';
+  component_type: 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'HQ Server' | 'Client' | 'GRX';
   version_number: string;
   status: 'testing' | 'deployed' | 'rollback_needed' | 'deprecated';
   deployment_date: string;
@@ -74,3 +74,11 @@ export interface SmartTmrVersion {
 }
 
 export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';
+
+export interface Component {
+  id: string;
+  name: string;
+  type: 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'HQ Server' | 'Client' | 'GRX';
+  description: string;
+  created_at: string;
+}

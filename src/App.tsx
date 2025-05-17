@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import DeploymentMatrix from './pages/DeploymentMatrix';
+import Components from './pages/Components';
 import Versions from './pages/Versions';
 import './index.css';
 
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/matrix" element={<DeploymentMatrix />} />
+          <Route path="/components" element={<Components />} />
           <Route path="/versions" element={<Versions />} />
         </Routes>
       </Layout>
