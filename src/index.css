@@ -16,6 +16,6 @@
 
 @layer components {
   .stat-card {
-    @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue/40 hover:shadow-lg;
+    @apply bg-[var(--dark-blue)] border border-neon-blue/20 rounded-lg p-6 transition-all duration-200 hover:border-neon-blue/40 hover:shadow-lg relative overflow-hidden;
   }
 }
