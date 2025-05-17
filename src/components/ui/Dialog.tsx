@@ -38,20 +38,20 @@ const Dialog: React.FC<DialogProps> = ({
     <Fragment>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+        className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto"
         onClick={handleBackdropClick}
       >
         {/* Dialog */}
         <div 
-          className={`bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} transform transition-all`}
+          className={`futuristic-card w-full ${sizeClasses[size]} transform transition-all`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+          <div className="px-6 py-4 border-b border-neon-blue/20 flex justify-between items-center">
+            <h3 className="text-lg font-medium neon-text">{title}</h3>
             <button
               type="button"
-              className="text-gray-400 hover:text-gray-500 focus:outline-none"
+              className="text-neon-blue/60 hover:text-neon-blue focus:outline-none"
               onClick={onClose}
             >
               <span className="sr-only">Close</span>
@@ -68,7 +68,7 @@ const Dialog: React.FC<DialogProps> = ({
 
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+            <div className="px-6 py-3 bg-darker-blue/50 border-t border-neon-blue/20 flex justify-end space-x-3">
               {footer}
             </div>
           )}

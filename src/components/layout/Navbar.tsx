@@ -24,8 +24,8 @@ const Navbar: React.FC = () => {
         className={({ isActive }) => `
           flex items-center px-4 py-2 text-sm font-medium rounded-md group transition-colors
           ${isActive 
-            ? 'bg-blue-100 text-blue-700' 
-            : 'text-gray-700 hover:bg-gray-100'}
+            ? 'bg-neon-blue/20 text-neon-blue' 
+            : 'text-neon-blue/60 hover:bg-neon-blue/10 hover:text-neon-blue'}
         `}
         onClick={() => setIsMobileMenuOpen(false)}
       >
@@ -36,13 +36,13 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
+    <nav className="bg-dark-blue border-b border-neon-blue/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Server className="block h-8 w-auto text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">C2 Dashboard</span>
+              <Server className="block h-8 w-auto text-neon-blue" />
+              <span className="ml-2 text-xl font-bold text-neon-blue">C2 Dashboard</span>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-2">
               {navItems.map((item) => (
