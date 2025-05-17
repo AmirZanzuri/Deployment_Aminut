@@ -7,6 +7,40 @@ import { Filter, Search, Plus, Edit2, Trash2, Server, X, Grid } from 'lucide-rea
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion, Component } from '../types';
 
+// Mock components for the hardware dropdown
+const mockHardwareComponents: Component[] = [
+  {
+    id: '1',
+    name: 'HQ Server Alpha',
+    type: 'HQ Server',
+    description: 'Primary HQ server',
+    ip: '192.168.1.100',
+    version: '1.0.0',
+    hardware: 'Intel Xeon E5-2680, 64GB RAM',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    name: 'Tactical Computer Beta',
+    type: 'Tactical Computer',
+    description: 'Field tactical computer',
+    ip: '192.168.1.101',
+    version: '1.0.0',
+    hardware: 'Intel i7-1185G7, 32GB RAM',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '3',
+    name: 'Client Station Gamma',
+    type: 'Client',
+    description: 'Standard client workstation',
+    ip: '192.168.1.102',
+    version: '1.0.0',
+    hardware: 'Intel i5-11400, 16GB RAM',
+    created_at: new Date().toISOString()
+  }
+];
+
 const DeploymentMatrix: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
@@ -55,6 +89,16 @@ const DeploymentMatrix: React.FC = () => {
   // Get components for a specific type
   const getComponentsForType = (type: string): ComponentVersion[] => {
     return componentVersions.filter(component => component.component_type === type);
+  };
+
+  // Get hardware components by type
+  const getHardwareComponents = (type: string | undefined = undefined) => {
+    return mockHardwareComponents.filter(c => !type || c.type === type);
+  };
+
+  // Get hardware component details
+  const getHardwareDetails = (id: string) => {
+    return mockHardwareComponents.find(c => c.id === id);
   };
 
   useEffect(() => {
@@ -412,7 +456,7 @@ const DeploymentMatrix: React.FC = () => {
                         {platform.type}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {platform.hardware || '-'}
+                        {platform.hardware ? getHardwareDetails(platform.hardware)?.name || platform.hardware : '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {getProjectName(platform.project_id)}
@@ -526,14 +570,19 @@ const DeploymentMatrix: React.FC = () => {
             <label htmlFor="hardware" className="block text-sm font-medium text-gray-700">
               Hardware
             </label>
-            <input
-              type="text"
+            <select
               id="hardware"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={newPlatform.hardware}
               onChange={(e) => setNewPlatform({ ...newPlatform, hardware: e.target.value })}
-              placeholder="e.g., Intel i7, 32GB RAM"
-            />
+            >
+              <option value="">Select Hardware</option>
+              {getHardwareComponents().map((component) => (
+                <option key={component.id} value={component.id}>
+                  {component.name} - {component.hardware}
+                </option>
+              ))}
+            </select>
           </div>
           
           <div>
@@ -638,14 +687,19 @@ const DeploymentMatrix: React.FC = () => {
               <label htmlFor="edit-hardware" className="block text-sm font-medium text-gray-700">
                 Hardware
               </label>
-              <input
-                type="text"
+              <select
                 id="edit-hardware"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 value={selectedPlatform.hardware}
                 onChange={(e) => setSelectedPlatform({ ...selectedPlatform, hardware: e.target.value })}
-                placeholder="e.g., Intel i7, 32GB RAM"
-              />
+              >
+                <option value="">Select Hardware</option>
+                {getHardwareComponents().map((component) => (
+                  <option key={component.id} value={component.id}>
+                    {component.name} - {component.hardware}
+                  </option>
+                ))}
+              </select>
             </div>
             
             <div>
