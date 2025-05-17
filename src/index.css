@@ -26,7 +26,7 @@ body {
 
   .futuristic-card {
     @apply futuristic-border;
-    box-shadow: 0 0 10px var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
   }
 
   .futuristic-grid {
@@ -34,7 +34,7 @@ body {
       linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
     background-size: 20px 20px;
     background-position: center center;
-    opacity: 0.1;
+    opacity: 0.05;
   }
 
   .status-bar {
@@ -52,11 +52,30 @@ body {
 
   .neon-text {
     @apply text-[var(--neon-blue)];
-    text-shadow: 0 0 10px var(--neon-blue);
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
   }
 
   .neon-border {
     @apply border-[var(--neon-blue)];
-    box-shadow: 0 0 10px var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+  }
+
+  .stat-card {
+    @apply futuristic-card p-6 flex items-center space-x-4;
+    background: linear-gradient(45deg, rgba(0, 26, 44, 0.8), rgba(0, 10, 20, 0.9));
+  }
+
+  .stat-icon {
+    @apply rounded-full p-3 flex items-center justify-center;
+    background: rgba(0, 240, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  }
+
+  .stat-value {
+    @apply text-2xl font-bold neon-text;
+  }
+
+  .stat-label {
+    @apply text-sm text-[var(--neon-blue)] opacity-80;
   }
 }
