@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --neon-blue-rgb: 0 243 255;
-    --dark-blue: #0a192f;
-    --darker-blue: #060d1a;
-  }
-
+  --neon-blue-rgb: 0 255 255;       /* Neon Cyan */
+  --dark-blue: #0f172a;             /* Dark background */
+  --darker-blue: #0a0f1c;           /* Even darker background */
+}
+  
   body {
     @apply bg-darker-blue text-neon-blue;
   }
