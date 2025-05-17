@@ -27,6 +27,18 @@ const DeploymentMatrix: React.FC = () => {
     application_version_id: '',
   });
 
+  // Find platforms with duplicate URNs
+  const getDuplicateUrns = () => {
+    const urnCounts = platforms.reduce((acc, platform) => {
+      acc[platform.urn] = (acc[platform.urn] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.keys(urnCounts).filter(urn => urnCounts[urn] > 1);
+  };
+
+  const duplicateUrns = getDuplicateUrns();
+
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
@@ -306,7 +318,13 @@ const DeploymentMatrix: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {Object.entries(groups).map(([groupName, platforms]) => (
                   platforms.map((platform, platformIndex) => (
-                    <tr key={platform.id} className={platformIndex === 0 ? 'bg-gray-50' : ''}>
+                    <tr 
+                      key={platform.id} 
+                      className={`
+                        ${platformIndex === 0 ? 'bg-gray-50' : ''}
+                        ${duplicateUrns.includes(platform.urn) ? 'bg-red-50' : ''}
+                      `}
+                    >
                       {platformIndex === 0 && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" rowSpan={platforms.length}>
                           {groupName}
@@ -315,7 +333,7 @@ const DeploymentMatrix: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {platform.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
+                      <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${duplicateUrns.includes(platform.urn) ? 'text-red-600 font-bold' : 'text-gray-500'}`}>
                         {platform.urn}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

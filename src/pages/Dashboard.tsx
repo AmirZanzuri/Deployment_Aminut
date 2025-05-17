@@ -41,11 +41,38 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  // Get critical issues (components with known issues)
+  // Find platforms with duplicate URNs
+  const getDuplicateUrnIssues = () => {
+    const urnCounts = mockPlatforms.reduce((acc, platform) => {
+      acc[platform.urn] = (acc[platform.urn] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const duplicateUrns = Object.entries(urnCounts)
+      .filter(([_, count]) => count > 1)
+      .map(([urn]) => urn);
+
+    return mockPlatforms
+      .filter(platform => duplicateUrns.includes(platform.urn))
+      .map(platform => ({
+        id: platform.id,
+        platform_id: platform.id,
+        component_type: 'platform',
+        status: 'rollback_needed' as const,
+        deployment_date: platform.created_at,
+        known_issues: [`Duplicate URN: ${platform.urn} - This URN is used by multiple platforms`],
+      }));
+  };
+
+  // Get critical issues (components with known issues or duplicate URNs)
   const getCriticalIssues = () => {
-    return mockComponentVersions.filter(component => 
+    const componentIssues = mockComponentVersions.filter(component => 
       component.known_issues && component.known_issues.length > 0
     );
+    
+    const duplicateUrnIssues = getDuplicateUrnIssues();
+    
+    return [...componentIssues, ...duplicateUrnIssues];
   };
 
   // Environment distribution
