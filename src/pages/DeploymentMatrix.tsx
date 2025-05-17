@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
-import { Filter, Search } from 'lucide-react';
+import Dialog, { DialogFooter } from '../components/ui/Dialog';
+import { Filter, Search, Plus } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 
@@ -17,6 +18,14 @@ const DeploymentMatrix: React.FC = () => {
   const [componentTypes, setComponentTypes] = useState<string[]>([]);
   const [selectedComponentType, setSelectedComponentType] = useState<string>('all');
   const [grouping, setGrouping] = useState<'project' | 'type' | 'version'>('project');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newPlatform, setNewPlatform] = useState({
+    name: '',
+    urn: '',
+    type: 'HQ Server' as const,
+    project_id: '',
+    application_version_id: '',
+  });
 
   useEffect(() => {
     // Simulate API call
@@ -31,8 +40,38 @@ const DeploymentMatrix: React.FC = () => {
       setComponentTypes(types);
       
       setIsLoading(false);
+
+      // Set default project_id for new platform
+      if (mockProjects.length > 0) {
+        setNewPlatform(prev => ({ ...prev, project_id: mockProjects[0].id }));
+      }
     }, 1000);
   }, []);
+
+  const handleCreatePlatform = () => {
+    // Generate a new ID and created_at date
+    const newId = (Math.max(...platforms.map(p => parseInt(p.id))) + 1).toString();
+    const createdAt = new Date().toISOString();
+    
+    const platformToAdd: Platform = {
+      ...newPlatform,
+      id: newId,
+      created_at: createdAt,
+    };
+    
+    // Add to platforms array
+    setPlatforms([...platforms, platformToAdd]);
+    setCreateDialogOpen(false);
+    
+    // Reset form (but keep the project_id)
+    setNewPlatform({
+      name: '',
+      urn: '',
+      type: 'HQ Server',
+      project_id: newPlatform.project_id,
+      application_version_id: '',
+    });
+  };
 
   // Get project by ID
   const getProjectName = (projectId: string): string => {
@@ -136,6 +175,13 @@ const DeploymentMatrix: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
+        <Button
+          variant="primary"
+          icon={<Plus size={16} />}
+          onClick={() => setCreateDialogOpen(true)}
+        >
+          New Node
+        </Button>
       </div>
 
       {/* Filters */}
@@ -294,6 +340,103 @@ const DeploymentMatrix: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Create Platform Dialog */}
+      <Dialog
+        isOpen={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+        title="Create New Node"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Create Node"
+            onCancel={() => setCreateDialogOpen(false)}
+            onConfirm={handleCreatePlatform}
+          />
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Node Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.name}
+              onChange={(e) => setNewPlatform({ ...newPlatform, name: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="urn" className="block text-sm font-medium text-gray-700">
+              URN
+            </label>
+            <input
+              type="text"
+              id="urn"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+              value={newPlatform.urn}
+              onChange={(e) => setNewPlatform({ ...newPlatform, urn: e.target.value })}
+              placeholder="1234567"
+              maxLength={7}
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700">
+              Type
+            </label>
+            <select
+              id="type"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.type}
+              onChange={(e) => setNewPlatform({ ...newPlatform, type: e.target.value as Platform['type'] })}
+            >
+              <option value="HQ Server">HQ Server</option>
+              <option value="Mounted Station">Mounted Station</option>
+            </select>
+          </div>
+          
+          <div>
+            <label htmlFor="project" className="block text-sm font-medium text-gray-700">
+              Project
+            </label>
+            <select
+              id="project"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.project_id}
+              onChange={(e) => setNewPlatform({ ...newPlatform, project_id: e.target.value })}
+            >
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
+              Application Version
+            </label>
+            <select
+              id="version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.application_version_id}
+              onChange={(e) => setNewPlatform({ ...newPlatform, application_version_id: e.target.value })}
+            >
+              <option value="">Select Version</option>
+              {applicationVersions.map((version) => (
+                <option key={version.id} value={version.id}>
+                  Version {version.version_number}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
