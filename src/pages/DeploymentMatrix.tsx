@@ -39,6 +39,12 @@ const DeploymentMatrix: React.FC = () => {
 
   const duplicateUrns = getDuplicateUrns();
 
+  // Get version number by id
+  const getVersionNumber = (versionId: string): string => {
+    const version = applicationVersions.find(v => v.id === versionId);
+    return version ? version.version_number : 'No Version';
+  };
+
   useEffect(() => {
     // Simulate API call
     setTimeout(() => {
@@ -196,7 +202,6 @@ const DeploymentMatrix: React.FC = () => {
         </Button>
       </div>
 
-      {/* Filters */}
       <Card>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
@@ -274,7 +279,6 @@ const DeploymentMatrix: React.FC = () => {
         </div>
       </Card>
 
-      {/* Matrix Display */}
       {Object.keys(groups).length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
           <Filter className="mx-auto h-12 w-12 text-gray-400" />
@@ -311,6 +315,9 @@ const DeploymentMatrix: React.FC = () => {
                     Type
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Version
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Components
                   </th>
                 </tr>
@@ -339,6 +346,9 @@ const DeploymentMatrix: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {platform.type}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {getVersionNumber(platform.application_version_id)}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-wrap gap-2">
                           {getComponentsForPlatform(platform.id).map((component) => (
@@ -359,7 +369,6 @@ const DeploymentMatrix: React.FC = () => {
         </div>
       )}
 
-      {/* Create Platform Dialog */}
       <Dialog
         isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
