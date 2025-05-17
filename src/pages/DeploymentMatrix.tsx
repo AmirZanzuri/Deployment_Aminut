@@ -3,9 +3,10 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
+import Table from '../components/ui/Table';
 import { Filter, Search, Plus, Edit2, Trash2, Server, X, Link, ExternalLink } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
-import { Platform, ComponentVersion, Project, ApplicationVersion, Component } from '../types';
+import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 import { Link as RouterLink } from 'react-router-dom';
 import { useComponentStore } from '../store/useComponentStore';
 
@@ -25,7 +26,6 @@ const DeploymentMatrix: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
-  const [showComponentsDialog, setShowComponentsDialog] = useState(false);
 
   const [newPlatform, setNewPlatform] = useState({
     name: '',
@@ -57,144 +57,211 @@ const DeploymentMatrix: React.FC = () => {
     }, 1000);
   }, []);
 
+  const getProjectName = (projectId: string) => {
+    return projects.find(p => p.id === projectId)?.name || 'Unknown Project';
+  };
+
+  const getComponentDetails = (componentId?: string) => {
+    return availableComponents.find(c => c.id === componentId);
+  };
+
+  const columns = [
+    {
+      header: 'Name',
+      accessor: 'name',
+    },
+    {
+      header: 'URN',
+      accessor: 'urn',
+      className: 'font-mono',
+    },
+    {
+      header: 'Type',
+      accessor: (platform: Platform) => (
+        <Badge status="info" label={platform.type} />
+      ),
+    },
+    {
+      header: 'Project',
+      accessor: (platform: Platform) => getProjectName(platform.project_id),
+    },
+    {
+      header: 'Hardware',
+      accessor: (platform: Platform) => {
+        const component = getComponentDetails(platform.component_id);
+        if (!component) return '-';
+        return (
+          <RouterLink
+            to={`/components#${component.id}`}
+            className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+          >
+            <span>{component.hardware}</span>
+            <ExternalLink size={14} />
+          </RouterLink>
+        );
+      },
+    },
+    {
+      header: 'Actions',
+      accessor: (platform: Platform) => (
+        <div className="flex space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Edit2 size={16} />}
+            onClick={() => {
+              setSelectedPlatform(platform);
+              setEditDialogOpen(true);
+            }}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Trash2 size={16} />}
+            onClick={() => {
+              setSelectedPlatform(platform);
+              setDeleteDialogOpen(true);
+            }}
+          />
+        </div>
+      ),
+    },
+  ];
+
+  // Filter platforms based on search and filters
+  const filteredPlatforms = platforms.filter(platform => {
+    const matchesProject = selectedProject === 'all' || platform.project_id === selectedProject;
+    const matchesSearch = platform.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         platform.urn.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesProject && matchesSearch;
+  });
+
   return (
-    <div className="p-6 space-y-6">
-      {/* Header Section */}
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
-        <Button onClick={() => setCreateDialogOpen(true)} className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          Add Platform
+        <Button
+          variant="primary"
+          icon={<Plus size={16} />}
+          onClick={() => setCreateDialogOpen(true)}
+        >
+          New Platform
         </Button>
       </div>
 
-      {/* Filters Section */}
-      <div className="flex gap-4 items-center">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search platforms..."
-            className="pl-10 pr-4 py-2 w-full border rounded-lg"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <select
-          className="border rounded-lg px-4 py-2"
-          value={selectedProject}
-          onChange={(e) => setSelectedProject(e.target.value)}
-        >
-          <option value="all">All Projects</option>
-          {projects.map(project => (
-            <option key={project.id} value={project.id}>{project.name}</option>
-          ))}
-        </select>
-        <select
-          className="border rounded-lg px-4 py-2"
-          value={selectedComponentType}
-          onChange={(e) => setSelectedComponentType(e.target.value)}
-        >
-          <option value="all">All Types</option>
-          {componentTypes.map(type => (
-            <option key={type} value={type}>{type}</option>
-          ))}
-        </select>
-        <select
-          className="border rounded-lg px-4 py-2"
-          value={grouping}
-          onChange={(e) => setGrouping(e.target.value as 'project' | 'type' | 'version')}
-        >
-          <option value="project">Group by Project</option>
-          <option value="type">Group by Type</option>
-          <option value="version">Group by Version</option>
-        </select>
-      </div>
-
-      {/* Content Section */}
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {platforms.map(platform => (
-            <Card key={platform.id} className="p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold">{platform.name}</h3>
-                  <p className="text-sm text-gray-500">{platform.urn}</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedPlatform(platform);
-                      setEditDialogOpen(true);
-                    }}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedPlatform(platform);
-                      setDeleteDialogOpen(true);
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
+      <Card>
+        <div className="p-4 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search platforms..."
+                  className="pl-10 pr-4 py-2 w-full border rounded-lg"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
-              <div className="mt-4 space-y-2">
-                <Badge>{platform.type}</Badge>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Server className="w-4 h-4" />
-                  <span>Project: {projects.find(p => p.id === platform.project_id)?.name}</span>
-                </div>
-              </div>
-            </Card>
-          ))}
+            </div>
+            <select
+              className="border rounded-lg px-4 py-2"
+              value={selectedProject}
+              onChange={(e) => setSelectedProject(e.target.value)}
+            >
+              <option value="all">All Projects</option>
+              {projects.map(project => (
+                <option key={project.id} value={project.id}>{project.name}</option>
+              ))}
+            </select>
+            <select
+              className="border rounded-lg px-4 py-2"
+              value={selectedComponentType}
+              onChange={(e) => setSelectedComponentType(e.target.value)}
+            >
+              <option value="all">All Types</option>
+              {componentTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
         </div>
-      )}
 
-      {/* Dialogs */}
+        <Table
+          columns={columns}
+          data={filteredPlatforms}
+          keyExtractor={(platform) => platform.id}
+          isLoading={isLoading}
+        />
+      </Card>
+
+      {/* Create Platform Dialog */}
       <Dialog
-        open={createDialogOpen}
+        isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
-        title="Add New Platform"
+        title="Create New Platform"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Create Platform"
+            onCancel={() => setCreateDialogOpen(false)}
+            onConfirm={() => {
+              // Handle platform creation
+              setCreateDialogOpen(false);
+            }}
+          />
+        }
       >
-        {/* Dialog content would go here */}
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
-          <Button>Create Platform</Button>
-        </DialogFooter>
+        {/* Dialog content */}
       </Dialog>
 
+      {/* Edit Platform Dialog */}
       <Dialog
-        open={editDialogOpen}
+        isOpen={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         title="Edit Platform"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Save Changes"
+            onCancel={() => setEditDialogOpen(false)}
+            onConfirm={() => {
+              // Handle platform update
+              setEditDialogOpen(false);
+            }}
+          />
+        }
       >
-        {/* Dialog content would go here */}
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-          <Button>Save Changes</Button>
-        </DialogFooter>
+        {/* Dialog content */}
       </Dialog>
 
+      {/* Delete Platform Dialog */}
       <Dialog
-        open={deleteDialogOpen}
+        isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         title="Delete Platform"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Delete Platform"
+            onCancel={() => setDeleteDialogOpen(false)}
+            onConfirm={() => {
+              // Handle platform deletion
+              setDeleteDialogOpen(false);
+            }}
+            danger
+          />
+        }
       >
-        <p>Are you sure you want to delete this platform? This action cannot be undone.</p>
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button variant="destructive">Delete Platform</Button>
-        </DialogFooter>
+        <div className="text-center py-4">
+          <Server className="h-12 w-12 text-red-500 mx-auto" />
+          <h3 className="mt-2 text-lg font-medium text-gray-900">
+            Delete Platform
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Are you sure you want to delete "{selectedPlatform?.name}"? This action cannot be undone.
+          </p>
+        </div>
       </Dialog>
     </div>
   );
