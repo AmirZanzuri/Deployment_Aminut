@@ -51,12 +51,34 @@ export const mockProjects: Project[] = [
   },
 ];
 
+// Mock Application Versions
+export const mockApplicationVersions = [
+  {
+    id: '1',
+    version_number: '1.0.0',
+    ecix_version: '2.1.0',
+    core_version: '3.0.0',
+    tiger_x_version: '1.5.0',
+    map_core_version: '4.2.1',
+    created_at: randomPastDate(20),
+  },
+  {
+    id: '2',
+    version_number: '1.1.0',
+    ecix_version: '2.2.0',
+    core_version: '3.1.0',
+    tiger_x_version: '1.6.0',
+    map_core_version: '4.3.0',
+    created_at: randomPastDate(10),
+  },
+];
+
 // Mock Platforms
 export const mockPlatforms: Platform[] = [
   {
     id: '1',
     name: 'Web Portal',
-    version: '2.5.0',
+    application_version_id: '1',
     type: 'web',
     environment: 'production',
     project_id: '1',
@@ -65,7 +87,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '2',
     name: 'Mobile Client',
-    version: '3.1.2',
+    application_version_id: '1',
     type: 'mobile',
     environment: 'production',
     project_id: '1',
@@ -74,7 +96,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '3',
     name: 'Desktop Application',
-    version: '4.0.1',
+    application_version_id: '2',
     type: 'desktop',
     environment: 'staging',
     project_id: '1',
@@ -83,7 +105,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '4',
     name: 'Backend Infrastructure',
-    version: '1.9.0',
+    application_version_id: '2',
     type: 'server',
     environment: 'development',
     project_id: '2',
@@ -92,7 +114,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '5',
     name: 'Secure Messaging',
-    version: '2.0.0',
+    application_version_id: '1',
     type: 'web',
     environment: 'testing',
     project_id: '2',
@@ -101,7 +123,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '6',
     name: 'Field Terminal',
-    version: '1.5.3',
+    application_version_id: '1',
     type: 'mobile',
     environment: 'production',
     project_id: '3',
