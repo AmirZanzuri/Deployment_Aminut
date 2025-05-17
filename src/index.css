@@ -23,13 +23,14 @@
 
   .stat-card:hover {
     border-color: rgba(0, 243, 255, 0.4);
-    @apply shadow-neon;
+    box-shadow: 0 0 15px var(--neon-blue);
   }
 
   .futuristic-card {
-    @apply bg-dark-blue border rounded-lg shadow-neon-lg 
+    @apply bg-dark-blue border rounded-lg 
            transition-all duration-200;
     border-color: rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 30px var(--neon-blue);
   }
 
   .neon-text {
