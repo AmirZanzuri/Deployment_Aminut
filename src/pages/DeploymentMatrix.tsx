@@ -3,7 +3,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
-import { Filter, Search, Plus, Edit2 } from 'lucide-react';
+import { Filter, Search, Plus, Edit2, Trash2, Server } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 
@@ -20,6 +20,7 @@ const DeploymentMatrix: React.FC = () => {
   const [grouping, setGrouping] = useState<'project' | 'type' | 'version'>('project');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const [newPlatform, setNewPlatform] = useState({
     name: '',
@@ -103,6 +104,17 @@ const DeploymentMatrix: React.FC = () => {
     
     setPlatforms(updatedPlatforms);
     setEditDialogOpen(false);
+    setSelectedPlatform(null);
+  };
+
+  const handleDeletePlatform = () => {
+    if (!selectedPlatform) return;
+    
+    // Remove the platform from the array
+    const updatedPlatforms = platforms.filter(p => p.id !== selectedPlatform.id);
+    
+    setPlatforms(updatedPlatforms);
+    setDeleteDialogOpen(false);
     setSelectedPlatform(null);
   };
 
@@ -379,15 +391,26 @@ const DeploymentMatrix: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          icon={<Edit2 size={16} />}
-                          onClick={() => {
-                            setSelectedPlatform(platform);
-                            setEditDialogOpen(true);
-                          }}
-                        />
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={<Edit2 size={16} />}
+                            onClick={() => {
+                              setSelectedPlatform(platform);
+                              setEditDialogOpen(true);
+                            }}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={<Trash2 size={16} />}
+                            onClick={() => {
+                              setSelectedPlatform(platform);
+                              setDeleteDialogOpen(true);
+                            }}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -590,6 +613,34 @@ const DeploymentMatrix: React.FC = () => {
                 ))}
               </select>
             </div>
+          </div>
+        )}
+      </Dialog>
+
+      {/* Delete Node Dialog */}
+      <Dialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        title="Delete Node"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Delete Node"
+            onCancel={() => setDeleteDialogOpen(false)}
+            onConfirm={handleDeletePlatform}
+            danger
+          />
+        }
+      >
+        {selectedPlatform && (
+          <div className="text-center py-4">
+            <Server className="h-12 w-12 text-red-500 mx-auto" />
+            <h3 className="mt-2 text-lg font-medium text-gray-900">
+              Delete Node
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Are you sure you want to delete "{selectedPlatform.name}"? This action cannot be undone.
+            </p>
           </div>
         )}
       </Dialog>
