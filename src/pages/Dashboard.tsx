@@ -4,7 +4,7 @@ import Card from '../components/ui/Card';
 import { useComponentStore } from '../store/useComponentStore';
 
 function Dashboard() {
-  const { components } = useComponentStore();
+  const { components, duplicateUrns } = useComponentStore();
   
   const stats = {
     totalPlatforms: components.length,
@@ -15,7 +15,7 @@ function Dashboard() {
       const diffInDays = Math.floor((now.getTime() - deployDate.getTime()) / (1000 * 60 * 60 * 24));
       return diffInDays <= 7;
     }).length,
-    criticalIssues: 0 // This would come from a real monitoring system
+    criticalIssues: duplicateUrns.length
   };
 
   const recentActivity = components
@@ -25,7 +25,9 @@ function Dashboard() {
       id: component.id,
       title: `${component.name} deployed`,
       type: component.type,
-      timestamp: new Date(component.created_at)
+      timestamp: new Date(component.created_at),
+      urn: component.urn,
+      isDuplicate: duplicateUrns.includes(component.urn)
     }));
 
   return (
@@ -70,14 +72,14 @@ function Dashboard() {
         </div>
         
         {stats.criticalIssues > 0 && (
-          <div className="stat-card">
+          <div className="stat-card bg-red-900/20 border-red-500/40">
             <div className="flex items-center justify-between mb-4">
-              <AlertCircle className="h-8 w-8 text-neon-blue" />
-              <span className="text-xs font-medium text-neon-blue/70">Issues</span>
+              <AlertCircle className="h-8 w-8 text-red-500" />
+              <span className="text-xs font-medium text-red-500/70">Critical</span>
             </div>
             <div>
-              <p className="text-3xl font-bold text-neon-blue">{stats.criticalIssues}</p>
-              <p className="text-sm font-medium text-neon-blue/70">Critical Issues</p>
+              <p className="text-3xl font-bold text-red-500">{stats.criticalIssues}</p>
+              <p className="text-sm font-medium text-red-500/70">Duplicate URNs</p>
             </div>
           </div>
         )}
@@ -88,19 +90,45 @@ function Dashboard() {
         className="h-[400px]"
       >
         <div className="space-y-4">
-          {recentActivity.map((activity, index) => (
-            <div key={activity.id} className="flex items-center space-x-4 p-4 border border-neon-blue/20 rounded-lg bg-neon-blue/5">
-              <div className="bg-neon-blue/10 p-2 rounded-full">
-                <Server className="h-5 w-5 text-neon-blue" />
+          {recentActivity.map((activity) => (
+            <div 
+              key={activity.id} 
+              className={`flex items-center space-x-4 p-4 border rounded-lg transition-colors ${
+                activity.isDuplicate 
+                  ? 'border-red-500/40 bg-red-900/20' 
+                  : 'border-neon-blue/20 bg-neon-blue/5'
+              }`}
+            >
+              <div className={`p-2 rounded-full ${
+                activity.isDuplicate ? 'bg-red-500/20' : 'bg-neon-blue/10'
+              }`}>
+                <Server className={`h-5 w-5 ${
+                  activity.isDuplicate ? 'text-red-500' : 'text-neon-blue'
+                }`} />
               </div>
               <div className="flex-1">
-                <p className="text-neon-blue font-medium">{activity.title}</p>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-neon-blue/70">
+                  <p className={`font-medium ${
+                    activity.isDuplicate ? 'text-red-500' : 'text-neon-blue'
+                  }`}>{activity.title}</p>
+                  {activity.isDuplicate && (
+                    <span className="text-xs font-medium bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full">
+                      Duplicate URN: {activity.urn}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-sm ${
+                    activity.isDuplicate ? 'text-red-500/70' : 'text-neon-blue/70'
+                  }`}>
                     {activity.timestamp.toLocaleDateString()} {activity.timestamp.toLocaleTimeString()}
                   </span>
-                  <span className="text-sm text-neon-blue/50">•</span>
-                  <span className="text-sm text-neon-blue/70">{activity.type}</span>
+                  <span className={`text-sm ${
+                    activity.isDuplicate ? 'text-red-500/50' : 'text-neon-blue/50'
+                  }`}>•</span>
+                  <span className={`text-sm ${
+                    activity.isDuplicate ? 'text-red-500/70' : 'text-neon-blue/70'
+                  }`}>{activity.type}</span>
                 </div>
               </div>
             </div>
