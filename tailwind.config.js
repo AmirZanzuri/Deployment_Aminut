@@ -22,6 +22,12 @@ export default {
         '80': '0.8',
         '90': '0.9',
       },
+      borderColor: {
+        'neon-blue': {
+          '20': 'rgba(0, 243, 255, 0.2)',
+          '40': 'rgba(0, 243, 255, 0.4)'
+        }
+      }
     },
   },
   plugins: [],
