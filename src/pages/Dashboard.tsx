@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, AlertCircle, CheckCircle2, Clock, LayoutGrid } from 'lucide-react';
+import { Server, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { mockProjects, mockPlatforms, mockComponentVersions } from '../services/mockData';
@@ -8,8 +8,8 @@ import { ComponentVersion, Platform } from '../types';
 const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
-    totalProjects: 0,
-    activePlatforms: 0,
+    totalPlatforms: 0,
+    activeDeployments: 0,
     recentDeployments: 0,
     criticalIssues: 0,
   });
@@ -75,17 +75,15 @@ const Dashboard: React.FC = () => {
     return [...componentIssues, ...duplicateUrnIssues];
   };
 
-  // Environment distribution
-  const getEnvironmentCounts = () => {
+  // Platform type distribution
+  const getPlatformTypeCounts = () => {
     const counts = {
-      production: 0,
-      staging: 0,
-      testing: 0,
-      development: 0,
+      'HQ Server': 0,
+      'Mounted Station': 0,
     };
 
     mockPlatforms.forEach(platform => {
-      counts[platform.environment as keyof typeof counts]++;
+      counts[platform.type]++;
     });
 
     return counts;
@@ -96,8 +94,8 @@ const Dashboard: React.FC = () => {
     // Simulate API call
     setTimeout(() => {
       setStats({
-        totalProjects: mockProjects.length,
-        activePlatforms: mockPlatforms.filter(p => p.environment === 'production').length,
+        totalPlatforms: mockPlatforms.length,
+        activeDeployments: mockComponentVersions.filter(c => c.status === 'deployed').length,
         recentDeployments: getRecentDeployments().length,
         criticalIssues: getCriticalIssues().length,
       });
@@ -134,7 +132,7 @@ const Dashboard: React.FC = () => {
   }
 
   const statusCounts = getStatusCounts();
-  const environmentCounts = getEnvironmentCounts();
+  const platformTypeCounts = getPlatformTypeCounts();
   const recentDeployments = getRecentDeployments();
   const criticalIssues = getCriticalIssues();
 
@@ -150,11 +148,11 @@ const Dashboard: React.FC = () => {
         <Card className="transition-all duration-300 hover:shadow-md">
           <div className="flex items-start">
             <div className="bg-blue-100 p-3 rounded-full">
-              <LayoutGrid className="h-6 w-6 text-blue-600" />
+              <Server className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Projects</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.totalProjects}</p>
+              <p className="text-sm font-medium text-gray-500">Total Platforms</p>
+              <p className="text-2xl font-semibold text-gray-900">{stats.totalPlatforms}</p>
             </div>
           </div>
         </Card>
@@ -162,11 +160,11 @@ const Dashboard: React.FC = () => {
         <Card className="transition-all duration-300 hover:shadow-md">
           <div className="flex items-start">
             <div className="bg-green-100 p-3 rounded-full">
-              <BarChart3 className="h-6 w-6 text-green-600" />
+              <CheckCircle2 className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Active Platforms</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.activePlatforms}</p>
+              <p className="text-sm font-medium text-gray-500">Active Deployments</p>
+              <p className="text-2xl font-semibold text-gray-900">{stats.activeDeployments}</p>
             </div>
           </div>
         </Card>
@@ -196,7 +194,7 @@ const Dashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Deployment Status and Environment Distribution */}
+      {/* Deployment Status and Platform Types */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card title="Deployment Status">
           <div className="space-y-4">
@@ -236,39 +234,23 @@ const Dashboard: React.FC = () => {
           </div>
         </Card>
 
-        <Card title="Environment Distribution">
+        <Card title="Platform Types">
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-indigo-50 p-4 rounded-lg">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-600">Production</span>
-                  <Badge status="success" label={environmentCounts.production.toString()} />
+                  <span className="text-sm font-medium text-gray-600">HQ Server</span>
+                  <Badge status="info" label={platformTypeCounts['HQ Server'].toString()} />
                 </div>
-                <p className="text-2xl font-bold text-indigo-700 mt-2">{environmentCounts.production}</p>
+                <p className="text-2xl font-bold text-indigo-700 mt-2">{platformTypeCounts['HQ Server']}</p>
               </div>
               
               <div className="bg-cyan-50 p-4 rounded-lg">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-600">Staging</span>
-                  <Badge status="info" label={environmentCounts.staging.toString()} />
+                  <span className="text-sm font-medium text-gray-600">Mounted Station</span>
+                  <Badge status="info" label={platformTypeCounts['Mounted Station'].toString()} />
                 </div>
-                <p className="text-2xl font-bold text-cyan-700 mt-2">{environmentCounts.staging}</p>
-              </div>
-              
-              <div className="bg-teal-50 p-4 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-600">Testing</span>
-                  <Badge status="info" label={environmentCounts.testing.toString()} />
-                </div>
-                <p className="text-2xl font-bold text-teal-700 mt-2">{environmentCounts.testing}</p>
-              </div>
-              
-              <div className="bg-sky-50 p-4 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-600">Development</span>
-                  <Badge status="default" label={environmentCounts.development.toString()} />
-                </div>
-                <p className="text-2xl font-bold text-sky-700 mt-2">{environmentCounts.development}</p>
+                <p className="text-2xl font-bold text-cyan-700 mt-2">{platformTypeCounts['Mounted Station']}</p>
               </div>
             </div>
           </div>
@@ -292,7 +274,7 @@ const Dashboard: React.FC = () => {
                     <div className="ml-3 flex-1">
                       <div className="flex justify-between">
                         <p className="text-sm font-medium text-gray-900">
-                          {platform?.name} - {deployment.component_type}
+                          {platform?.name} ({platform?.unit})
                         </p>
                         <Badge 
                           status={getStatusColor(deployment.status)}
@@ -328,7 +310,7 @@ const Dashboard: React.FC = () => {
                     <div className="ml-3 flex-1">
                       <div className="flex justify-between">
                         <p className="text-sm font-medium text-gray-900">
-                          {platform?.name} - {issue.component_type}
+                          {platform?.name} ({platform?.unit})
                         </p>
                         <Badge 
                           status={getStatusColor(issue.status)}
