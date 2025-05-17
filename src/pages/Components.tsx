@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
 import { Component } from '../types';
-import { Plus, Edit2, Trash2, Cpu } from 'lucide-react';
+import { Plus, Edit2, Trash2, Cpu, LayoutGrid, List } from 'lucide-react';
 import { useComponentStore } from '../store/useComponentStore';
 
 const Components: React.FC = () => {
@@ -13,6 +13,7 @@ const Components: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [newComponent, setNewComponent] = useState({
     name: '',
     type: 'Tactical Computer' as Component['type'],
@@ -60,6 +61,15 @@ const Components: React.FC = () => {
     'HQ Server',
     'Client',
   ];
+
+  // Group components by type
+  const groupedComponents = components.reduce((acc, component) => {
+    if (!acc[component.type]) {
+      acc[component.type] = [];
+    }
+    acc[component.type].push(component);
+    return acc;
+  }, {} as Record<Component['type'], Component[]>);
 
   const columns = [
     {
@@ -122,22 +132,101 @@ const Components: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Components</h1>
-        <Button
-          variant="primary"
-          icon={<Plus size={16} />}
-          onClick={() => setCreateDialogOpen(true)}
-        >
-          New Component
-        </Button>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+            <Button
+              variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+              size="sm"
+              icon={<LayoutGrid size={16} />}
+              onClick={() => setViewMode('grid')}
+            >
+              Grid
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'primary' : 'ghost'}
+              size="sm"
+              icon={<List size={16} />}
+              onClick={() => setViewMode('list')}
+            >
+              List
+            </Button>
+          </div>
+          <Button
+            variant="primary"
+            icon={<Plus size={16} />}
+            onClick={() => setCreateDialogOpen(true)}
+          >
+            New Component
+          </Button>
+        </div>
       </div>
 
-      <Card>
-        <Table
-          columns={columns}
-          data={components}
-          keyExtractor={(component) => component.id}
-        />
-      </Card>
+      {viewMode === 'grid' ? (
+        <div className="space-y-6">
+          {componentTypes.map(type => {
+            const typeComponents = groupedComponents[type] || [];
+            if (typeComponents.length === 0) return null;
+
+            return (
+              <div key={type} className="space-y-4">
+                <h2 className="text-lg font-semibold text-gray-900">{type}s</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {typeComponents.map(component => (
+                    <Card key={component.id} className="hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900">{component.name}</h3>
+                          <p className="text-sm text-gray-500">{component.description}</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={<Edit2 size={16} />}
+                            onClick={() => {
+                              setSelectedComponent(component);
+                              setEditDialogOpen(true);
+                            }}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={<Trash2 size={16} />}
+                            onClick={() => {
+                              setSelectedComponent(component);
+                              setDeleteDialogOpen(true);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4 space-y-2">
+                        <p className="text-sm">
+                          <span className="font-medium">IP:</span>{' '}
+                          <span className="font-mono">{component.ip}</span>
+                        </p>
+                        <p className="text-sm">
+                          <span className="font-medium">Version:</span> {component.version}
+                        </p>
+                        <p className="text-sm">
+                          <span className="font-medium">Hardware:</span> {component.hardware}
+                        </p>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <Card>
+          <Table
+            columns={columns}
+            data={components}
+            keyExtractor={(component) => component.id}
+          />
+        </Card>
+      )}
 
       {/* Create Component Dialog */}
       <Dialog
