@@ -16,13 +16,13 @@
 
 @layer components {
   .stat-card {
-    @apply bg-dark-blue border border-neon-blue/20 rounded-lg p-6 
-           transition-all duration-200 hover:border-neon-blue/40 
+    @apply bg-dark-blue border border-opacity-20 border-neon-blue rounded-lg p-6 
+           transition-all duration-200 hover:border-opacity-40 hover:border-neon-blue
            hover:shadow-neon relative overflow-hidden;
   }
 
   .futuristic-card {
-    @apply bg-dark-blue border border-neon-blue/20 rounded-lg 
+    @apply bg-dark-blue border border-opacity-20 border-neon-blue rounded-lg 
            shadow-neon-lg transition-all duration-200;
   }
 

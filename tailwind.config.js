@@ -1,13 +1,5 @@
 // tailwind.config.js
-const plugin = require('tailwindcss/plugin');
-
-function withOpacityValue(variable) {
-  return ({ opacityValue }) =>
-    opacityValue === undefined
-      ? `rgb(var(${variable}))`
-      : `rgb(var(${variable}) / ${opacityValue})`;
-}
-
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './index.html',
@@ -16,13 +8,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'neon-blue': withOpacityValue('--neon-blue-rgb'),
+        'neon-blue': 'var(--neon-blue)',
         'dark-blue': 'var(--dark-blue)',
         'darker-blue': 'var(--darker-blue)',
       },
       boxShadow: {
-        'neon': '0 0 15px rgb(var(--neon-blue-rgb) / 0.3)',
-        'neon-lg': '0 0 30px rgb(var(--neon-blue-rgb) / 0.3)',
+        'neon': '0 0 15px var(--neon-blue)',
+        'neon-lg': '0 0 30px var(--neon-blue)',
       },
     },
   },
