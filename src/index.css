@@ -16,14 +16,20 @@
 
 @layer components {
   .stat-card {
-    @apply bg-dark-blue border border-opacity-20 border-neon-blue rounded-lg p-6 
-           transition-all duration-200 hover:border-opacity-40 hover:border-neon-blue
-           hover:shadow-neon relative overflow-hidden;
+    @apply bg-dark-blue border rounded-lg p-6 
+           transition-all duration-200 relative overflow-hidden;
+    border-color: theme('borderColor.neon-blue.20');
+  }
+
+  .stat-card:hover {
+    border-color: theme('borderColor.neon-blue.40');
+    @apply shadow-neon;
   }
 
   .futuristic-card {
-    @apply bg-dark-blue border border-opacity-20 border-neon-blue rounded-lg 
-           shadow-neon-lg transition-all duration-200;
+    @apply bg-dark-blue border rounded-lg shadow-neon-lg 
+           transition-all duration-200;
+    border-color: theme('borderColor.neon-blue.20');
   }
 
   .neon-text {
