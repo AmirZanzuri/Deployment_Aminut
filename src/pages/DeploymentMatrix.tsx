@@ -3,7 +3,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
-import { Filter, Search, Plus } from 'lucide-react';
+import { Filter, Search, Plus, Edit2 } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 
@@ -19,6 +19,8 @@ const DeploymentMatrix: React.FC = () => {
   const [selectedComponentType, setSelectedComponentType] = useState<string>('all');
   const [grouping, setGrouping] = useState<'project' | 'type' | 'version'>('project');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
   const [newPlatform, setNewPlatform] = useState({
     name: '',
     urn: '',
@@ -89,6 +91,19 @@ const DeploymentMatrix: React.FC = () => {
       project_id: newPlatform.project_id,
       application_version_id: '',
     });
+  };
+
+  const handleEditPlatform = () => {
+    if (!selectedPlatform) return;
+
+    // Update the platform in the array
+    const updatedPlatforms = platforms.map(p => 
+      p.id === selectedPlatform.id ? selectedPlatform : p
+    );
+    
+    setPlatforms(updatedPlatforms);
+    setEditDialogOpen(false);
+    setSelectedPlatform(null);
   };
 
   // Get project by ID
@@ -320,6 +335,9 @@ const DeploymentMatrix: React.FC = () => {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Components
                   </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -360,6 +378,17 @@ const DeploymentMatrix: React.FC = () => {
                           ))}
                         </div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          icon={<Edit2 size={16} />}
+                          onClick={() => {
+                            setSelectedPlatform(platform);
+                            setEditDialogOpen(true);
+                          }}
+                        />
+                      </td>
                     </tr>
                   ))
                 ))}
@@ -369,6 +398,7 @@ const DeploymentMatrix: React.FC = () => {
         </div>
       )}
 
+      {/* Create Node Dialog */}
       <Dialog
         isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
@@ -464,10 +494,107 @@ const DeploymentMatrix: React.FC = () => {
           </div>
         </div>
       </Dialog>
+
+      {/* Edit Node Dialog */}
+      <Dialog
+        isOpen={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        title="Edit Node"
+        footer={
+          <DialogFooter
+            cancelText="Cancel"
+            confirmText="Save Changes"
+            onCancel={() => setEditDialogOpen(false)}
+            onConfirm={handleEditPlatform}
+          />
+        }
+      >
+        {selectedPlatform && (
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700">
+                Node Name
+              </label>
+              <input
+                type="text"
+                id="edit-name"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.name}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, name: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-urn" className="block text-sm font-medium text-gray-700">
+                URN
+              </label>
+              <input
+                type="text"
+                id="edit-urn"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+                value={selectedPlatform.urn}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, urn: e.target.value })}
+                placeholder="1234567"
+                maxLength={7}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700">
+                Type
+              </label>
+              <select
+                id="edit-type"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.type}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, type: e.target.value as Platform['type'] })}
+              >
+                <option value="HQ Server">HQ Server</option>
+                <option value="Mounted Station">Mounted Station</option>
+              </select>
+            </div>
+            
+            <div>
+              <label htmlFor="edit-project" className="block text-sm font-medium text-gray-700">
+                Project
+              </label>
+              <select
+                id="edit-project"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.project_id}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, project_id: e.target.value })}
+              >
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
+                Application Version
+              </label>
+              <select
+                id="edit-version"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.application_version_id}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, application_version_id: e.target.value })}
+              >
+                <option value="">Select Version</option>
+                {applicationVersions.map((version) => (
+                  <option key={version.id} value={version.id}>
+                    Version {version.version_number}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+      </Dialog>
     </div>
   );
 };
 
 export default DeploymentMatrix;
-
-export default DeploymentMatrix
