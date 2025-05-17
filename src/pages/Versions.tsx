@@ -4,8 +4,9 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
-import { ApplicationVersion, Platform, Project } from '../types';
+import { ApplicationVersion, Platform } from '../types';
 import { Plus, Trash2, Edit2, Box } from 'lucide-react';
+import { mockPlatforms } from '../services/mockData';
 
 const mockVersions: ApplicationVersion[] = [
   {
@@ -17,7 +18,6 @@ const mockVersions: ApplicationVersion[] = [
     created_at: new Date().toISOString(),
     platforms_count: 3,
   },
-  // Add more mock versions as needed
 ];
 
 const Versions: React.FC = () => {
@@ -26,6 +26,8 @@ const Versions: React.FC = () => {
   const [selectedVersion, setSelectedVersion] = useState<ApplicationVersion | null>(null);
   const [showPlatformsDialog, setShowPlatformsDialog] = useState(false);
   const [showNewVersionDialog, setShowNewVersionDialog] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
+  const [showPlatformDetailsDialog, setShowPlatformDetailsDialog] = useState(false);
   const [newVersion, setNewVersion] = useState({
     ecix_version: '',
     core_version: '',
@@ -95,6 +97,42 @@ const Versions: React.FC = () => {
       header: 'Created',
       accessor: (version: ApplicationVersion) => 
         new Date(version.created_at).toLocaleDateString(),
+    },
+  ];
+
+  const platformColumns = [
+    {
+      header: 'Name',
+      accessor: (platform: Platform) => (
+        <Button
+          variant="ghost"
+          onClick={() => {
+            setSelectedPlatform(platform);
+            setShowPlatformDetailsDialog(true);
+          }}
+        >
+          {platform.name}
+        </Button>
+      ),
+    },
+    {
+      header: 'Version',
+      accessor: 'version',
+    },
+    {
+      header: 'Type',
+      accessor: (platform: Platform) => (
+        <span className="capitalize">{platform.type}</span>
+      ),
+    },
+    {
+      header: 'Environment',
+      accessor: (platform: Platform) => (
+        <Badge
+          status={platform.environment === 'production' ? 'success' : 'info'}
+          label={platform.environment}
+        />
+      ),
     },
   ];
 
@@ -197,50 +235,73 @@ const Versions: React.FC = () => {
       <Dialog
         isOpen={showPlatformsDialog}
         onClose={() => setShowPlatformsDialog(false)}
-        title="Platforms Using This Version"
+        title="Connected Platforms"
         size="lg"
       >
-        {selectedVersion && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-500">E-CIX Version</h3>
-                <p className="mt-1 text-lg font-semibold">{selectedVersion.ecix_version}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-500">Core Version</h3>
-                <p className="mt-1 text-lg font-semibold">{selectedVersion.core_version}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-500">Tiger-X Version</h3>
-                <p className="mt-1 text-lg font-semibold">{selectedVersion.tiger_x_version}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-500">MapCore Version</h3>
-                <p className="mt-1 text-lg font-semibold">{selectedVersion.map_core_version}</p>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Connected Platforms</h3>
-              {selectedVersion.platforms && selectedVersion.platforms.length > 0 ? (
-                <div className="space-y-4">
-                  {selectedVersion.platforms.map(platform => (
-                    <div key={platform.id} className="flex items-center justify-between p-4 bg-white border rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-gray-900">{platform.name}</h4>
-                        <p className="text-sm text-gray-500">Version {platform.version}</p>
-                      </div>
-                      <Badge
-                        status={platform.environment === 'production' ? 'success' : 'info'}
-                        label={platform.environment}
-                      />
-                    </div>
-                  ))}
+        <div className="space-y-6">
+          {selectedVersion && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-500">E-CIX Version</h3>
+                  <p className="mt-1 text-lg font-semibold">{selectedVersion.ecix_version}</p>
                 </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No platforms are using this version</p>
-              )}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-500">Core Version</h3>
+                  <p className="mt-1 text-lg font-semibold">{selectedVersion.core_version}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-500">Tiger-X Version</h3>
+                  <p className="mt-1 text-lg font-semibold">{selectedVersion.tiger_x_version}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-sm font-medium text-gray-500">MapCore Version</h3>
+                  <p className="mt-1 text-lg font-semibold">{selectedVersion.map_core_version}</p>
+                </div>
+              </div>
+
+              <Table
+                columns={platformColumns}
+                data={mockPlatforms.slice(0, 3)} // Simulated connected platforms
+                keyExtractor={(platform) => platform.id}
+                isLoading={false}
+              />
+            </>
+          )}
+        </div>
+      </Dialog>
+
+      {/* Platform Details Dialog */}
+      <Dialog
+        isOpen={showPlatformDetailsDialog}
+        onClose={() => setShowPlatformDetailsDialog(false)}
+        title="Platform Details"
+        size="md"
+      >
+        {selectedPlatform && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-500">Name</label>
+                <p className="mt-1 text-sm text-gray-900">{selectedPlatform.name}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">Version</label>
+                <p className="mt-1 text-sm text-gray-900">{selectedPlatform.version}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">Type</label>
+                <p className="mt-1 text-sm text-gray-900 capitalize">{selectedPlatform.type}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">Environment</label>
+                <p className="mt-1">
+                  <Badge
+                    status={selectedPlatform.environment === 'production' ? 'success' : 'info'}
+                    label={selectedPlatform.environment}
+                  />
+                </p>
+              </div>
             </div>
           </div>
         )}
