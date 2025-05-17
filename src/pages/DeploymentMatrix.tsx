@@ -31,6 +31,7 @@ const DeploymentMatrix: React.FC = () => {
     type: 'HQ Server' as const,
     project_id: '',
     application_version_id: '',
+    hardware: '',
   });
 
   // Find platforms with duplicate URNs
@@ -65,7 +66,7 @@ const DeploymentMatrix: React.FC = () => {
       setApplicationVersions(mockApplicationVersions);
       
       // Extract unique component types
-      const types = Array.from(new Set(mockComponentVersions.map(c => c.component_type)));
+      const types = ['HQ Server', 'Client', 'Tactical Computer'];
       setComponentTypes(types);
       
       setIsLoading(false);
@@ -99,6 +100,7 @@ const DeploymentMatrix: React.FC = () => {
       type: 'HQ Server',
       project_id: newPlatform.project_id,
       application_version_id: '',
+      hardware: '',
     });
   };
 
@@ -160,6 +162,34 @@ const DeploymentMatrix: React.FC = () => {
     }
   };
 
+  // Handle component selection
+  const handleComponentSelect = (component: Component) => {
+    if (!currentPlatformId) return;
+    
+    setSelectedComponents(prev => {
+      const currentComponents = prev[currentPlatformId] || [];
+      const isSelected = currentComponents.some(c => c.id === component.id);
+      
+      if (isSelected) {
+        return {
+          ...prev,
+          [currentPlatformId]: currentComponents.filter(c => c.id !== component.id)
+        };
+      } else {
+        return {
+          ...prev,
+          [currentPlatformId]: [...currentComponents, component]
+        };
+      }
+    });
+  };
+
+  const isComponentSelected = (componentId: string) => {
+    if (!currentPlatformId) return false;
+    const platformComponents = selectedComponents[currentPlatformId] || [];
+    return platformComponents.some(c => c.id === componentId);
+  };
+
   // Group platforms based on selected grouping option
   const groupedPlatforms = () => {
     const groups: Record<string, Platform[]> = {};
@@ -192,34 +222,6 @@ const DeploymentMatrix: React.FC = () => {
     });
 
     return groups;
-  };
-
-  // Handle component selection
-  const handleComponentSelect = (component: Component) => {
-    if (!currentPlatformId) return;
-    
-    setSelectedComponents(prev => {
-      const currentComponents = prev[currentPlatformId] || [];
-      const isSelected = currentComponents.some(c => c.id === component.id);
-      
-      if (isSelected) {
-        return {
-          ...prev,
-          [currentPlatformId]: currentComponents.filter(c => c.id !== component.id)
-        };
-      } else {
-        return {
-          ...prev,
-          [currentPlatformId]: [...currentComponents, component]
-        };
-      }
-    });
-  };
-
-  const isComponentSelected = (componentId: string) => {
-    if (!currentPlatformId) return false;
-    const platformComponents = selectedComponents[currentPlatformId] || [];
-    return platformComponents.some(c => c.id === componentId);
   };
 
   if (isLoading) {
@@ -369,6 +371,9 @@ const DeploymentMatrix: React.FC = () => {
                     Type
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Hardware
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Project
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -405,6 +410,9 @@ const DeploymentMatrix: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {platform.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {platform.hardware || '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {getProjectName(platform.project_id)}
@@ -513,6 +521,20 @@ const DeploymentMatrix: React.FC = () => {
               <option value="Mounted Station">Mounted Station</option>
             </select>
           </div>
+
+          <div>
+            <label htmlFor="hardware" className="block text-sm font-medium text-gray-700">
+              Hardware
+            </label>
+            <input
+              type="text"
+              id="hardware"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newPlatform.hardware}
+              onChange={(e) => setNewPlatform({ ...newPlatform, hardware: e.target.value })}
+              placeholder="e.g., Intel i7, 32GB RAM"
+            />
+          </div>
           
           <div>
             <label htmlFor="project" className="block text-sm font-medium text-gray-700">
@@ -610,6 +632,20 @@ const DeploymentMatrix: React.FC = () => {
                 <option value="HQ Server">HQ Server</option>
                 <option value="Mounted Station">Mounted Station</option>
               </select>
+            </div>
+
+            <div>
+              <label htmlFor="edit-hardware" className="block text-sm font-medium text-gray-700">
+                Hardware
+              </label>
+              <input
+                type="text"
+                id="edit-hardware"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedPlatform.hardware}
+                onChange={(e) => setSelectedPlatform({ ...selectedPlatform, hardware: e.target.value })}
+                placeholder="e.g., Intel i7, 32GB RAM"
+              />
             </div>
             
             <div>
@@ -711,10 +747,14 @@ const DeploymentMatrix: React.FC = () => {
                     `}
                     onClick={() => handleComponentSelect(component)}
                   >
+                    
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-medium text-gray-900">
                           {component.component_type} {component.version_number}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Hardware: {component.hardware || 'Not specified'}
                         </p>
                         <p className="text-sm text-gray-500">
                           Deployed: {new Date(component.deployment_date).toLocaleDateString()}
