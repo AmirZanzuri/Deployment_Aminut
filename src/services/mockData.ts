@@ -51,6 +51,55 @@ export const mockProjects: Project[] = [
   },
 ];
 
+// Mock Component Versions
+export const mockComponentVersions: ComponentVersion[] = [
+  {
+    id: '1',
+    platform_id: '1',
+    component_type: 'Frontend',
+    version_number: '1.0.0',
+    status: 'deployed',
+    deployment_date: randomPastDate(5),
+    known_issues: [],
+  },
+  {
+    id: '2',
+    platform_id: '2',
+    component_type: 'Mobile App',
+    version_number: '1.1.0',
+    status: 'testing',
+    deployment_date: randomPastDate(3),
+    known_issues: ['Performance issues on older devices'],
+  },
+  {
+    id: '3',
+    platform_id: '3',
+    component_type: 'Desktop Client',
+    version_number: '2.0.0',
+    status: 'rollback_needed',
+    deployment_date: randomPastDate(2),
+    known_issues: ['Critical authentication bug', 'Data sync issues'],
+  },
+  {
+    id: '4',
+    platform_id: '4',
+    component_type: 'Backend API',
+    version_number: '1.5.0',
+    status: 'deprecated',
+    deployment_date: randomPastDate(30),
+    known_issues: ['Deprecated API endpoints'],
+  },
+  {
+    id: '5',
+    platform_id: '5',
+    component_type: 'Message Service',
+    version_number: '3.0.0',
+    status: 'deployed',
+    deployment_date: randomPastDate(1),
+    known_issues: [],
+  },
+];
+
 // Mock Application Versions
 export const mockApplicationVersions: ApplicationVersion[] = [
   {
