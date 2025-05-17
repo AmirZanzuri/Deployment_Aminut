@@ -23,10 +23,8 @@ export default {
         '90': '0.9',
       },
       borderColor: {
-        'neon-blue': {
-          '20': 'rgba(0, 243, 255, 0.2)',
-          '40': 'rgba(0, 243, 255, 0.4)'
-        }
+        'neon-blue-20': 'rgba(0, 243, 255, 0.2)',
+        'neon-blue-40': 'rgba(0, 243, 255, 0.4)'
       }
     },
   },
