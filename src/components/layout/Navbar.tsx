@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Cpu, LayoutDashboard, Server, Package, Settings, Menu, X } from 'lucide-react';
+import { Cpu, LayoutDashboard, Server, Package, Settings, Menu, X, Versions } from 'lucide-react';
 import Button from '../ui/Button';
 
 const Navbar: React.FC = () => {
@@ -15,6 +15,7 @@ const Navbar: React.FC = () => {
     { path: '/matrix', label: 'Deployment Matrix', icon: <Cpu size={18} /> },
     { path: '/projects', label: 'Projects', icon: <Package size={18} /> },
     { path: '/platforms', label: 'Platforms', icon: <Server size={18} /> },
+    { path: '/versions', label: 'Versions', icon: <Versions size={18} /> },
   ];
 
   const NavItem: React.FC<{ path: string; label: string; icon: React.ReactNode }> = ({ path, label, icon }) => {

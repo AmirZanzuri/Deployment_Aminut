@@ -36,4 +36,16 @@ export interface Product {
   created_at: string;
 }
 
+export interface ApplicationVersion {
+  id: string;
+  ecix_version: string;
+  core_version: string;
+  tiger_x_version: string;
+  map_core_version: string;
+  created_at: string;
+  platforms_count?: number;
+  platforms?: Platform[];
+  projects?: Project[];
+}
+
 export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';

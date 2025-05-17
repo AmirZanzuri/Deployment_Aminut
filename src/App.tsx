@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import DeploymentMatrix from './pages/DeploymentMatrix';
 import Projects from './pages/Projects';
 import Platforms from './pages/Platforms';
+import Versions from './pages/Versions';
 import './index.css';
 
 function App() {
@@ -16,10 +17,9 @@ function App() {
           <Route path="/matrix" element={<DeploymentMatrix />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/platforms" element={<Platforms />} />
+          <Route path="/versions" element={<Versions />} />
         </Routes>
       </Layout>
     </Router>
   );
 }
-
-export default App;
