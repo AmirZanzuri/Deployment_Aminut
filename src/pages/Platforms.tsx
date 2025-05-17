@@ -18,10 +18,11 @@ const Platforms: React.FC = () => {
   const [currentPlatform, setCurrentPlatform] = useState<Platform | null>(null);
   const [newPlatform, setNewPlatform] = useState({
     name: '',
-    version: '1.0.0',
+    urn: '',
     type: 'web' as const,
     environment: 'development' as const,
     project_id: '',
+    application_version_id: '',
   });
 
   useEffect(() => {
@@ -56,10 +57,11 @@ const Platforms: React.FC = () => {
     // Reset form (but keep the project_id)
     setNewPlatform({
       name: '',
-      version: '1.0.0',
+      urn: '',
       type: 'web',
       environment: 'development',
       project_id: newPlatform.project_id,
+      application_version_id: '',
     });
   };
 
@@ -122,6 +124,11 @@ const Platforms: React.FC = () => {
 
   const platformColumns = [
     {
+      header: 'URN',
+      accessor: 'urn',
+      className: 'font-mono text-sm',
+    },
+    {
       header: 'Name',
       accessor: (platform: Platform) => (
         <div className="font-medium text-gray-900">{platform.name}</div>
@@ -130,10 +137,6 @@ const Platforms: React.FC = () => {
     {
       header: 'Type',
       accessor: (platform: Platform) => getPlatformTypeElement(platform.type),
-    },
-    {
-      header: 'Version',
-      accessor: 'version',
     },
     {
       header: 'Environment',
@@ -180,7 +183,7 @@ const Platforms: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Platforms</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
         <Button
           variant="primary"
           icon={<Plus size={16} />}
@@ -231,17 +234,18 @@ const Platforms: React.FC = () => {
               onChange={(e) => setNewPlatform({ ...newPlatform, name: e.target.value })}
             />
           </div>
-          
+
           <div>
-            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
-              Version
+            <label htmlFor="urn" className="block text-sm font-medium text-gray-700">
+              URN
             </label>
             <input
               type="text"
-              id="version"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              value={newPlatform.version}
-              onChange={(e) => setNewPlatform({ ...newPlatform, version: e.target.value })}
+              id="urn"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+              value={newPlatform.urn}
+              onChange={(e) => setNewPlatform({ ...newPlatform, urn: e.target.value })}
+              placeholder="urn:project:platform"
             />
           </div>
           
@@ -327,17 +331,17 @@ const Platforms: React.FC = () => {
                 onChange={(e) => setCurrentPlatform({ ...currentPlatform, name: e.target.value })}
               />
             </div>
-            
+
             <div>
-              <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
-                Version
+              <label htmlFor="edit-urn" className="block text-sm font-medium text-gray-700">
+                URN
               </label>
               <input
                 type="text"
-                id="edit-version"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                value={currentPlatform.version}
-                onChange={(e) => setCurrentPlatform({ ...currentPlatform, version: e.target.value })}
+                id="edit-urn"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+                value={currentPlatform.urn}
+                onChange={(e) => setCurrentPlatform({ ...currentPlatform, urn: e.target.value })}
               />
             </div>
             

@@ -132,6 +132,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '1',
     name: 'Web Portal',
+    urn: 'urn:fdc:web-portal',
     application_version_id: '1',
     type: 'web',
     environment: 'production',
@@ -141,6 +142,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '2',
     name: 'Mobile Client',
+    urn: 'urn:fdc:mobile-client',
     application_version_id: '1',
     type: 'mobile',
     environment: 'production',
@@ -150,6 +152,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '3',
     name: 'Desktop Application',
+    urn: 'urn:fdc:desktop-app',
     application_version_id: '2',
     type: 'desktop',
     environment: 'staging',
@@ -159,6 +162,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '4',
     name: 'Backend Infrastructure',
+    urn: 'urn:iccs:backend',
     application_version_id: '2',
     type: 'server',
     environment: 'development',
@@ -168,6 +172,7 @@ export const mockPlatforms: Platform[] = [
   {
     id: '5',
     name: 'Secure Messaging',
+    urn: 'urn:iccs:messaging',
     application_version_id: '1',
     type: 'web',
     environment: 'testing',
@@ -177,130 +182,11 @@ export const mockPlatforms: Platform[] = [
   {
     id: '6',
     name: 'Field Terminal',
+    urn: 'urn:dita:field-terminal',
     application_version_id: '1',
     type: 'mobile',
     environment: 'production',
     project_id: '3',
     created_at: randomPastDate(40),
-  },
-];
-
-// Mock Component Versions
-export const mockComponentVersions: ComponentVersion[] = [
-  {
-    id: '1',
-    platform_id: '1',
-    component_type: 'app',
-    version_number: '2.5.0',
-    status: 'deployed',
-    deployment_date: randomPastDate(20),
-    known_issues: [],
-    release_notes_url: 'https://example.com/release-notes/v2.5.0',
-  },
-  {
-    id: '2',
-    platform_id: '1',
-    component_type: 'framework',
-    version_number: '1.2.3',
-    status: 'deployed',
-    deployment_date: randomPastDate(19),
-  },
-  {
-    id: '3',
-    platform_id: '1',
-    component_type: 'map',
-    version_number: '3.4.1',
-    status: 'testing',
-    deployment_date: randomPastDate(5),
-    known_issues: ['Performance issues with large datasets'],
-  },
-  {
-    id: '4',
-    platform_id: '2',
-    component_type: 'app',
-    version_number: '3.1.2',
-    status: 'deployed',
-    deployment_date: randomPastDate(15),
-  },
-  {
-    id: '5',
-    platform_id: '2',
-    component_type: 'radio',
-    version_number: '2.0.0',
-    status: 'rollback_needed',
-    deployment_date: randomPastDate(3),
-    known_issues: ['Connectivity issues in remote areas', 'Battery drain issue'],
-  },
-  {
-    id: '6',
-    platform_id: '3',
-    component_type: 'app',
-    version_number: '4.0.1',
-    status: 'deployed',
-    deployment_date: randomPastDate(10),
-  },
-  {
-    id: '7',
-    platform_id: '3',
-    component_type: 'product',
-    version_number: '2.1.0',
-    status: 'deployed',
-    deployment_date: randomPastDate(9),
-  },
-  {
-    id: '8',
-    platform_id: '4',
-    component_type: 'app',
-    version_number: '1.9.0',
-    status: 'deprecated',
-    deployment_date: randomPastDate(50),
-  },
-  {
-    id: '9',
-    platform_id: '5',
-    component_type: 'app',
-    version_number: '2.0.0',
-    status: 'deployed',
-    deployment_date: randomPastDate(8),
-  },
-  {
-    id: '10',
-    platform_id: '6',
-    component_type: 'app',
-    version_number: '1.5.3',
-    status: 'deployed',
-    deployment_date: randomPastDate(7),
-  },
-];
-
-// Mock Products
-export const mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Command Console',
-    description: 'Central command and control console',
-    status: 'active',
-    created_at: randomPastDate(300),
-  },
-  {
-    id: '2',
-    name: 'Field Communicator',
-    description: 'Portable communication device for field operations',
-    status: 'active',
-    created_at: randomPastDate(250),
-  },
-  {
-    id: '3',
-    name: 'Tactical Map',
-    description: 'Interactive mapping and situational awareness tool',
-    status: 'active',
-    created_at: randomPastDate(200),
-  },
-  {
-    id: '4',
-    name: 'Sensor Hub',
-    description: 'Integration platform for various sensor types',
-    status: 'inactive',
-    created_at: randomPastDate(150),
   },
 ];

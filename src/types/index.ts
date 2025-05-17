@@ -10,6 +10,7 @@ export interface Project {
 export interface Platform {
   id: string;
   name: string;
+  urn: string;
   application_version_id: string;
   type: 'web' | 'mobile' | 'desktop' | 'server';
   environment: 'production' | 'staging' | 'testing' | 'development';
