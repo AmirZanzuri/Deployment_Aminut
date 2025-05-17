@@ -80,5 +80,7 @@ export interface Component {
   name: string;
   type: 'Tactical Computer' | 'Smart TMR' | 'E-Lynks Radio' | 'HQ Server' | 'Client' | 'GRX';
   description: string;
+  ip: string;
+  version: string;
   created_at: string;
 }

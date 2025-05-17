@@ -17,6 +17,8 @@ const Components: React.FC = () => {
     name: '',
     type: 'Tactical Computer' as Component['type'],
     description: '',
+    ip: '',
+    version: '',
   });
 
   useEffect(() => {
@@ -28,6 +30,8 @@ const Components: React.FC = () => {
           name: 'Main Computer',
           type: 'Tactical Computer',
           description: 'Primary tactical computer system',
+          ip: '192.168.1.100',
+          version: '1.0.0',
           created_at: new Date().toISOString(),
         },
         {
@@ -35,6 +39,8 @@ const Components: React.FC = () => {
           name: 'Radio System',
           type: 'E-Lynks Radio',
           description: 'Communication radio system',
+          ip: '192.168.1.101',
+          version: '2.1.0',
           created_at: new Date().toISOString(),
         },
       ]);
@@ -55,6 +61,8 @@ const Components: React.FC = () => {
       name: '',
       type: 'Tactical Computer',
       description: '',
+      ip: '',
+      version: '',
     });
   };
 
@@ -97,6 +105,15 @@ const Components: React.FC = () => {
     {
       header: 'Type',
       accessor: 'type',
+    },
+    {
+      header: 'IP Address',
+      accessor: 'ip',
+      className: 'font-mono',
+    },
+    {
+      header: 'Version',
+      accessor: 'version',
     },
     {
       header: 'Description',
@@ -200,6 +217,34 @@ const Components: React.FC = () => {
           </div>
 
           <div>
+            <label htmlFor="ip" className="block text-sm font-medium text-gray-700">
+              IP Address
+            </label>
+            <input
+              type="text"
+              id="ip"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+              value={newComponent.ip}
+              onChange={(e) => setNewComponent({ ...newComponent, ip: e.target.value })}
+              placeholder="192.168.1.100"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
+              Version
+            </label>
+            <input
+              type="text"
+              id="version"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              value={newComponent.version}
+              onChange={(e) => setNewComponent({ ...newComponent, version: e.target.value })}
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700">
               Description
             </label>
@@ -257,6 +302,34 @@ const Components: React.FC = () => {
                   <option key={type} value={type}>{type}</option>
                 ))}
               </select>
+            </div>
+
+            <div>
+              <label htmlFor="edit-ip" className="block text-sm font-medium text-gray-700">
+                IP Address
+              </label>
+              <input
+                type="text"
+                id="edit-ip"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono"
+                value={selectedComponent.ip}
+                onChange={(e) => setSelectedComponent({ ...selectedComponent, ip: e.target.value })}
+                placeholder="192.168.1.100"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-version" className="block text-sm font-medium text-gray-700">
+                Version
+              </label>
+              <input
+                type="text"
+                id="edit-version"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={selectedComponent.version}
+                onChange={(e) => setSelectedComponent({ ...selectedComponent, version: e.target.value })}
+                placeholder="1.0.0"
+              />
             </div>
 
             <div>
