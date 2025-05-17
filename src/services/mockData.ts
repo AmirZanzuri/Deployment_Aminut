@@ -1,4 +1,4 @@
-import { Project, Platform, ComponentVersion, Product, ApplicationVersion, ElynxVersion, GrxVersion } from '../types';
+import { Project, Platform, ComponentVersion, Product, ApplicationVersion, ElynxVersion, GrxVersion, SmartTmrVersion } from '../types';
 
 // Generate a random date in the past (up to maxDays ago)
 const randomPastDate = (maxDays = 365) => {
@@ -106,6 +106,24 @@ export const mockGrxVersions: GrxVersion[] = [
     software_version: '2.2.0',
     protocol_version: '3.1.0',
     created_at: randomPastDate(3),
+  },
+];
+
+// Mock Smart-TMR Versions
+export const mockSmartTmrVersions: SmartTmrVersion[] = [
+  {
+    id: '1',
+    version_number: '1.0.0',
+    hardware_version: '2.1.0',
+    software_version: '3.0.0',
+    created_at: randomPastDate(8),
+  },
+  {
+    id: '2',
+    version_number: '1.1.0',
+    hardware_version: '2.2.0',
+    software_version: '3.1.0',
+    created_at: randomPastDate(2),
   },
 ];
 

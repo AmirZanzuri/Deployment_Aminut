@@ -65,4 +65,12 @@ export interface GrxVersion {
   created_at: string;
 }
 
+export interface SmartTmrVersion {
+  id: string;
+  version_number: string;
+  hardware_version: string;
+  software_version: string;
+  created_at: string;
+}
+
 export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';
