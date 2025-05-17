@@ -4,7 +4,7 @@ import Badge from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import Dialog, { DialogFooter } from '../components/ui/Dialog';
 import Table from '../components/ui/Table';
-import { Filter, Search, Plus, Edit2, Trash2, Server, X, Link, ExternalLink } from 'lucide-react';
+import { Filter, Search, Plus, Edit2, Trash2, Server, X, Link, ExternalLink, Cpu } from 'lucide-react';
 import { mockPlatforms, mockComponentVersions, mockProjects, mockApplicationVersions } from '../services/mockData';
 import { Platform, ComponentVersion, Project, ApplicationVersion } from '../types';
 import { Link as RouterLink } from 'react-router-dom';
@@ -150,18 +150,39 @@ const DeploymentMatrix: React.FC = () => {
       },
     },
     {
-      header: 'Components',
-      accessor: (platform: Platform) => (
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleComponentSelection(platform.id)}
-          >
-            {selectedComponents[platform.id]?.length || 0} Selected
-          </Button>
-        </div>
-      ),
+      header: 'Selected Components',
+      accessor: (platform: Platform) => {
+        const platformComponents = selectedComponents[platform.id] || [];
+        const selectedCount = platformComponents.length;
+        
+        return (
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<Cpu size={16} />}
+              onClick={() => handleComponentSelection(platform.id)}
+            >
+              {selectedCount} Component{selectedCount !== 1 ? 's' : ''} Selected
+            </Button>
+            {selectedCount > 0 && (
+              <div className="flex gap-1">
+                {platformComponents.map(componentId => {
+                  const component = availableComponents.find(c => c.id === componentId);
+                  if (!component) return null;
+                  return (
+                    <Badge
+                      key={componentId}
+                      status="info"
+                      label={component.name}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      },
     },
     {
       header: 'Actions',
