@@ -1,4 +1,4 @@
-import { Project, Platform, ComponentVersion, Product, ApplicationVersion, ElynxVersion, GrxVersion, SmartTmrVersion } from '../types';
+import { Project, Platform, ComponentVersion, Product, ApplicationVersion, ElynxVersion, GrxVersion, SmartTmrVersion, Component } from '../types';
 
 // Generate a random date in the past (up to maxDays ago)
 const randomPastDate = (maxDays = 365) => {
@@ -6,6 +6,45 @@ const randomPastDate = (maxDays = 365) => {
   date.setDate(date.getDate() - Math.floor(Math.random() * maxDays));
   return date.toISOString();
 };
+
+// Mock Components
+export const mockComponents: Component[] = [
+  {
+    id: '1',
+    name: 'Server Node A',
+    type: 'HQ Server',
+    hardware: 'Dell PowerEdge R740',
+    created_at: randomPastDate(100),
+  },
+  {
+    id: '2',
+    name: 'Server Node B',
+    type: 'HQ Server',
+    hardware: 'HP ProLiant DL380',
+    created_at: randomPastDate(90),
+  },
+  {
+    id: '3',
+    name: 'Tactical Computer Alpha',
+    type: 'Tactical Computer',
+    hardware: 'Panasonic Toughbook CF-31',
+    created_at: randomPastDate(80),
+  },
+  {
+    id: '4',
+    name: 'Client Station 1',
+    type: 'Client',
+    hardware: 'Dell Precision 7560',
+    created_at: randomPastDate(70),
+  },
+  {
+    id: '5',
+    name: 'Client Station 2',
+    type: 'Client',
+    hardware: 'HP ZBook Fury 15',
+    created_at: randomPastDate(60),
+  },
+];
 
 // Mock Projects
 export const mockProjects: Project[] = [
