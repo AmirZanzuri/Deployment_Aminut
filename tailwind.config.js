@@ -13,6 +13,5 @@ export default {
       },
     },
   },
-  safelist: ['bg-dark-blue', 'bg-darker-blue', 'bg-neon-blue'],
   plugins: [],
 }
