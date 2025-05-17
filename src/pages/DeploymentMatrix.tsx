@@ -23,7 +23,7 @@ const DeploymentMatrix: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [componentTypes, setComponentTypes] = useState<string[]>([]);
   const [selectedComponentType, setSelectedComponentType] = useState<string>('all');
-  const [grouping, setGrouping] = useState<'project' | 'type' | 'version'>('project');
+  const [groupBy, setGroupBy] = useState<'project' | 'type' | 'none'>('project');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -203,10 +203,40 @@ const DeploymentMatrix: React.FC = () => {
     return matchesProject && matchesSearch;
   });
 
+  // Group platforms based on selected grouping
+  const groupedPlatforms = React.useMemo(() => {
+    if (groupBy === 'none') {
+      return { 'All Platforms': filteredPlatforms };
+    }
+
+    return filteredPlatforms.reduce((acc, platform) => {
+      const groupKey = groupBy === 'project' 
+        ? getProjectName(platform.project_id)
+        : platform.type;
+      
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
+      }
+      acc[groupKey].push(platform);
+      return acc;
+    }, {} as Record<string, Platform[]>);
+  }, [filteredPlatforms, groupBy]);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
+        <div className="flex items-center space-x-4">
+          <h1 className="text-2xl font-bold text-gray-900">Deployment Matrix</h1>
+          <select
+            className="border rounded-md px-3 py-1.5 text-sm"
+            value={groupBy}
+            onChange={(e) => setGroupBy(e.target.value as 'project' | 'type' | 'none')}
+          >
+            <option value="none">No Grouping</option>
+            <option value="project">Group by Project</option>
+            <option value="type">Group by Type</option>
+          </select>
+        </div>
         <Button
           variant="primary"
           icon={<Plus size={16} />}
@@ -254,12 +284,23 @@ const DeploymentMatrix: React.FC = () => {
           </div>
         </div>
 
-        <Table
-          columns={columns}
-          data={filteredPlatforms}
-          keyExtractor={(platform) => platform.id}
-          isLoading={isLoading}
-        />
+        <div className="space-y-6">
+          {Object.entries(groupedPlatforms).map(([group, items]) => (
+            <div key={group}>
+              {groupBy !== 'none' && (
+                <div className="px-6 py-3 border-b border-gray-200">
+                  <h2 className="text-lg font-medium text-gray-900">{group}</h2>
+                </div>
+              )}
+              <Table
+                columns={columns}
+                data={items}
+                keyExtractor={(platform) => platform.id}
+                isLoading={isLoading}
+              />
+            </div>
+          ))}
+        </div>
       </Card>
 
       {/* Create Platform Dialog */}
